@@ -12797,6 +12797,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var svg = _dom["default"].svg('toggler-down', 13, 13);
 
         dnd.appendChild(svg);
+        dnd.setAttribute('draggable', 'true');
         contentNode.appendChild(dnd);
         contentNode.appendChild(pluginsContent);
         /**
