@@ -1,0 +1,52 @@
+.ce-toolbox {
+  position: absolute;
+  visibility: hidden;
+  transition: opacity 100ms ease;
+  will-change: opacity;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+
+  background: #FFFFFF;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+
+  @media (--mobile){
+    /*position: static;*/
+    /*transform: none !important;*/
+    align-items: center;
+    overflow-x: auto;
+  }
+
+  &--opened {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  &__button {
+    @apply --toolbox-button;
+    flex-shrink: 0;
+  }
+
+  &__span {
+   margin-left: 10px;
+ }
+}
+
+.ce-toolbox-button-tooltip {
+  &__shortcut {
+    opacity: 0.6;
+    word-spacing: -3px;
+    margin-top: 3px;
+  }
+}
+
+/**
+ * Styles for Narrow mode
+ */
+.codex-editor--narrow .ce-toolbox {
+  @media (--not-mobile) {
+    background: #fff;
+    z-index: 2;
+  }
+}

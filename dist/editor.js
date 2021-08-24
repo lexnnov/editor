@@ -16095,6 +16095,8 @@ var map = {
 	"./readonly.ts": "./src/components/modules/readonly.ts",
 	"./rectangleSelection": "./src/components/modules/rectangleSelection.ts",
 	"./rectangleSelection.ts": "./src/components/modules/rectangleSelection.ts",
+	"./removeble": "./src/components/modules/removeble.ts",
+	"./removeble.ts": "./src/components/modules/removeble.ts",
 	"./renderer": "./src/components/modules/renderer.ts",
 	"./renderer.ts": "./src/components/modules/renderer.ts",
 	"./saver": "./src/components/modules/saver.ts",
@@ -18480,6 +18482,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             Caret = _this$Editor4.Caret;
         var currentBlock = BlockManager.currentBlock;
         var tool = currentBlock.tool;
+        console.log(currentBlock);
         /**
          * Check if Block should be removed by current Backspace keydown
          */
@@ -23803,6 +23806,246 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   _exports["default"] = RectangleSelection;
   RectangleSelection.displayName = "RectangleSelection";
+  module.exports = exports.default;
+});
+
+/***/ }),
+
+/***/ "./src/components/modules/removeble.ts":
+/*!*********************************************!*\
+  !*** ./src/components/modules/removeble.ts ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js"), __webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ "./node_modules/@babel/runtime/helpers/slicedToArray.js"), __webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ "./node_modules/@babel/runtime/helpers/asyncToGenerator.js"), __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/classCallCheck.js"), __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/createClass.js"), __webpack_require__(/*! @babel/runtime/helpers/inherits */ "./node_modules/@babel/runtime/helpers/inherits.js"), __webpack_require__(/*! @babel/runtime/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/possibleConstructorReturn.js"), __webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/getPrototypeOf.js"), __webpack_require__(/*! ../__module */ "./src/components/__module.ts"), __webpack_require__(/*! ../errors/critical */ "./src/components/errors/critical.ts")], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else { var mod; }
+})(typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : this, function (_exports, _regenerator, _slicedToArray2, _asyncToGenerator2, _classCallCheck2, _createClass2, _inherits2, _possibleConstructorReturn2, _getPrototypeOf2, _module, _critical) {
+  "use strict";
+
+  var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ "./node_modules/@babel/runtime/helpers/interopRequireDefault.js");
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports["default"] = void 0;
+  _regenerator = _interopRequireDefault(_regenerator);
+  _slicedToArray2 = _interopRequireDefault(_slicedToArray2);
+  _asyncToGenerator2 = _interopRequireDefault(_asyncToGenerator2);
+  _classCallCheck2 = _interopRequireDefault(_classCallCheck2);
+  _createClass2 = _interopRequireDefault(_createClass2);
+  _inherits2 = _interopRequireDefault(_inherits2);
+  _possibleConstructorReturn2 = _interopRequireDefault(_possibleConstructorReturn2);
+  _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf2);
+  _module = _interopRequireDefault(_module);
+
+  function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0, _getPrototypeOf2["default"])(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2["default"])(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2["default"])(this, result); }; }
+
+  function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+  /**
+   * @module ReadOnly
+   *
+   * Has one important method:
+   *    - {Function} toggleReadonly - Set read-only mode or toggle current state
+   *
+   * @version 1.0.0
+   *
+   * @typedef {Removeble} Removeble
+   * @property {boolean} removebleEnabled - read-only state
+   */
+  var Removeble = /*#__PURE__*/function (_Module) {
+    (0, _inherits2["default"])(Removeble, _Module);
+
+    var _super = _createSuper(Removeble);
+
+    function Removeble() {
+      var _this;
+
+      (0, _classCallCheck2["default"])(this, Removeble);
+      _this = _super.apply(this, arguments);
+      /**
+       * Array of tools name which don't support read-only mode
+       */
+
+      _this.toolsDontSupportReadOnly = [];
+      /**
+       * Value to track read-only state
+       *
+       * @type {boolean}
+       */
+
+      _this.removebleEnabled = false;
+      return _this;
+    }
+    /**
+     * Returns state of read only mode
+     */
+
+
+    (0, _createClass2["default"])(Removeble, [{
+      key: "isEnabled",
+      get: function get() {
+        return this.removebleEnabled;
+      }
+      /**
+       * Set initial state
+       */
+
+    }, {
+      key: "prepare",
+      value: function () {
+        var _prepare = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee() {
+          var Tools, blockTools, toolsDontSupportReadOnly;
+          return _regenerator["default"].wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  Tools = this.Editor.Tools;
+                  blockTools = Tools.blockTools;
+                  toolsDontSupportReadOnly = [];
+                  Array.from(blockTools.entries()).forEach(function (_ref) {
+                    var _ref2 = (0, _slicedToArray2["default"])(_ref, 2),
+                        name = _ref2[0],
+                        tool = _ref2[1];
+
+                    if (!tool.isReadOnlySupported) {
+                      toolsDontSupportReadOnly.push(name);
+                    }
+                  });
+                  this.toolsDontSupportReadOnly = toolsDontSupportReadOnly;
+
+                  if (this.config.readOnly && toolsDontSupportReadOnly.length > 0) {
+                    this.throwCriticalError();
+                  }
+
+                  this.toggle(this.config.readOnly);
+
+                case 7:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee, this);
+        }));
+
+        function prepare() {
+          return _prepare.apply(this, arguments);
+        }
+
+        return prepare;
+      }()
+      /**
+       * Set read-only mode or toggle current state
+       * Call all Modules `toggleReadOnly` method and re-render Editor
+       *
+       * @param {boolean} state - (optional) read-only state or toggle
+       */
+
+    }, {
+      key: "toggle",
+      value: function () {
+        var _toggle = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
+          var state,
+              oldState,
+              name,
+              savedBlocks,
+              _args2 = arguments;
+          return _regenerator["default"].wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  state = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : !this.removebleEnabled;
+
+                  if (state && this.toolsDontSupportReadOnly.length > 0) {
+                    this.throwCriticalError();
+                  }
+
+                  oldState = this.removebleEnabled;
+                  this.removebleEnabled = state;
+                  _context2.t0 = _regenerator["default"].keys(this.Editor);
+
+                case 5:
+                  if ((_context2.t1 = _context2.t0()).done) {
+                    _context2.next = 12;
+                    break;
+                  }
+
+                  name = _context2.t1.value;
+
+                  if (this.Editor[name].toggleReadOnly) {
+                    _context2.next = 9;
+                    break;
+                  }
+
+                  return _context2.abrupt("continue", 5);
+
+                case 9:
+                  /**
+                   * set or toggle read-only state
+                   */
+                  this.Editor[name].toggleReadOnly(state);
+                  _context2.next = 5;
+                  break;
+
+                case 12:
+                  if (!(oldState === state)) {
+                    _context2.next = 14;
+                    break;
+                  }
+
+                  return _context2.abrupt("return", this.removebleEnabled);
+
+                case 14:
+                  _context2.next = 16;
+                  return this.Editor.Saver.save();
+
+                case 16:
+                  savedBlocks = _context2.sent;
+                  _context2.next = 19;
+                  return this.Editor.BlockManager.clear();
+
+                case 19:
+                  _context2.next = 21;
+                  return this.Editor.Renderer.render(savedBlocks.blocks);
+
+                case 21:
+                  return _context2.abrupt("return", this.removebleEnabled);
+
+                case 22:
+                case "end":
+                  return _context2.stop();
+              }
+            }
+          }, _callee2, this);
+        }));
+
+        function toggle() {
+          return _toggle.apply(this, arguments);
+        }
+
+        return toggle;
+      }()
+      /**
+       * Throws an error about tools which don't support read-only mode
+       */
+
+    }, {
+      key: "throwCriticalError",
+      value: function throwCriticalError() {
+        throw new _critical.CriticalError("To enable read-only mode all connected tools should support it. Tools ".concat(this.toolsDontSupportReadOnly.join(', '), " don't support read-only mode."));
+      }
+    }]);
+    return Removeble;
+  }(_module["default"]);
+
+  _exports["default"] = Removeble;
+  Removeble.displayName = "Removeble";
   module.exports = exports.default;
 });
 
