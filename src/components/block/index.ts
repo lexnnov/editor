@@ -741,8 +741,8 @@ export default class Block extends EventsDispatcher<BlockEvents> {
     dnd.setAttribute('draggable', 'true')
 
     contentNode.appendChild(dnd);
-    contentNode.appendChild(pluginsContent);
     contentNode.appendChild(remove);
+    contentNode.appendChild(pluginsContent);
 
     remove.addEventListener('click', ()=>{
       this.api.methods.blocks.delete(this.api.methods.blocks.getCurrentBlockIndex())

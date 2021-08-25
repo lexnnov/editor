@@ -6,13 +6,13 @@
  *
  * @version 2.0.0
  */
-import Block, { BlockToolAPI } from '../block';
+import Block, {BlockToolAPI} from '../block';
 import Module from '../__module';
 import $ from '../dom';
 import * as _ from '../utils';
 import Blocks from '../blocks';
-import { BlockToolData, PasteEvent } from '../../../types';
-import { BlockTuneData } from '../../../types/block-tunes/block-tune-data';
+import {BlockToolData, PasteEvent} from '../../../types';
+import {BlockTuneData} from '../../../types/block-tunes/block-tune-data';
 import BlockAPI from '../block/api';
 
 /**
@@ -223,11 +223,11 @@ export default class BlockManager extends Module {
    * @returns {Block}
    */
   public composeBlock({
-    tool: name,
-    data = {},
-    id = undefined,
-    tunes: tunesData = {},
-  }: {tool: string; id?: string; data?: BlockToolData; tunes?: {[name: string]: BlockTuneData}}): Block {
+                        tool: name,
+                        data = {},
+                        id = undefined,
+                        tunes: tunesData = {},
+                      }: { tool: string; id?: string; data?: BlockToolData; tunes?: { [name: string]: BlockTuneData } }): Block {
     const readOnly = this.Editor.ReadOnly.isEnabled;
     console.log(this.Editor.Tools.blockTools.get(name))
     const tool = this.Editor.Tools.blockTools.get(name);
@@ -261,21 +261,21 @@ export default class BlockManager extends Module {
    * @returns {Block}
    */
   public insert({
-    id = undefined,
-    tool = this.config.defaultBlock,
-    data = {},
-    index,
-    needToFocus = true,
-    replace = false,
-    tunes = {},
-  }: {
+                  id = undefined,
+                  tool = this.config.defaultBlock,
+                  data = {},
+                  index,
+                  needToFocus = true,
+                  replace = false,
+                  tunes = {},
+                }: {
     id?: string;
     tool?: string;
     data?: BlockToolData;
     index?: number;
     needToFocus?: boolean;
     replace?: boolean;
-    tunes?: {[name: string]: BlockTuneData};
+    tunes?: { [name: string]: BlockTuneData };
   } = {}): Block {
     let newIndex = index;
 
@@ -316,9 +316,9 @@ export default class BlockManager extends Module {
    * @returns {Block}
    */
   public replace({
-    tool = this.config.defaultBlock,
-    data = {},
-  }): Block {
+                   tool = this.config.defaultBlock,
+                   data = {},
+                 }): Block {
     return this.insert({
       tool,
       data,
@@ -364,7 +364,7 @@ export default class BlockManager extends Module {
    * @returns {Block} inserted Block
    */
   public insertDefaultBlockAtIndex(index: number, needToFocus = false): Block {
-    const block = this.composeBlock({ tool: this.config.defaultBlock });
+    const block = this.composeBlock({tool: this.config.defaultBlock});
 
     this._blocks[index] = block;
 
@@ -527,7 +527,7 @@ export default class BlockManager extends Module {
      *
      * @type {Block}
      */
-    return this.insert({ data });
+    return this.insert({data});
   }
 
   /**
@@ -574,8 +574,8 @@ export default class BlockManager extends Module {
     }
 
     const nodes = this._blocks.nodes,
-        firstLevelBlock = element.closest(`.${Block.CSS.wrapper}`),
-        index = nodes.indexOf(firstLevelBlock as HTMLElement);
+      firstLevelBlock = element.closest(`.${Block.CSS.wrapper}`),
+      index = nodes.indexOf(firstLevelBlock as HTMLElement);
 
     if (index >= 0) {
       return this._blocks[index];
@@ -772,7 +772,7 @@ export default class BlockManager extends Module {
    * @param {Block} block - Block to which event should be bound
    */
   private bindBlockEvents(block: Block): void {
-    const { BlockEvents } = this.Editor;
+    const {BlockEvents} = this.Editor;
 
     this.readOnlyMutableListeners.on(block.holder, 'keydown', (event: KeyboardEvent) => {
       BlockEvents.keydown(event);

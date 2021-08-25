@@ -65,7 +65,6 @@ export interface EditorModules {
   NotifierAPI: NotifierAPI;
   TooltipAPI: TooltipAPI;
   ReadOnly: ReadOnly;
-  Removeble: Removeble;
   ReadOnlyAPI: ReadOnlyAPI;
   I18nAPI: I18nAPI;
   ModificationsObserver: ModificationsObserver;
