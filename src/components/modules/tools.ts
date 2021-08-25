@@ -135,8 +135,6 @@ export default class Tools extends Module {
 
     this.factory = new ToolsFactory(config, this.config, this.Editor.API);
 
-    console.log(config)
-
     /**
      * getting classes that has prepare method
      */

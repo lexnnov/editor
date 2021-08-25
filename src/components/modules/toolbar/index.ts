@@ -266,6 +266,8 @@ export default class Toolbar extends Module<ToolbarNodes> {
    * Draws Toolbar elements
    */
   private make(): void {
+    const {isMobile} = this.Editor.UI;
+
     this.nodes.wrapper = $.make('div', this.CSS.toolbar);
 
     /**
@@ -286,7 +288,6 @@ export default class Toolbar extends Module<ToolbarNodes> {
      *  - Plus Button
      *  - Toolbox
      */
-    console.log(this.nodes.content)
     this.nodes.plusButton = $.make('div', this.CSS.plusButton);
     $.append(this.nodes.plusButton, $.svg('plus', 40, 40));
     $.append(this.nodes.content, this.nodes.plusButton);
@@ -305,7 +306,9 @@ export default class Toolbar extends Module<ToolbarNodes> {
       textContent: '⇥ Tab',
     }));
 
-    this.tooltip.onHover(this.nodes.plusButton, tooltipContent);
+    if(!isMobile) {
+      this.tooltip.onHover(this.nodes.plusButton, tooltipContent);
+    }
 
     /**
      * Fill Actions Zone:

@@ -514,7 +514,6 @@ export default class Block extends EventsDispatcher<BlockEvents> {
    */
   public get pluginsContent(): HTMLElement {
     const blockContentNodes = this.holder.querySelector(`.${Block.CSS.content}`);
-    console.log(blockContentNodes)
     if (blockContentNodes && blockContentNodes.childNodes.length) {
       /**
        * Editors Block content can contain different Nodes from extensions
@@ -522,7 +521,6 @@ export default class Block extends EventsDispatcher<BlockEvents> {
        */
       for (let child = blockContentNodes.childNodes.length - 2; child >= 0; child--) {
         const contentNode = blockContentNodes.childNodes[child];
-        console.log(contentNode)
 
         if (!$.isExtensionNode(contentNode)) {
           return contentNode as HTMLElement;

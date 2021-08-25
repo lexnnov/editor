@@ -111,7 +111,6 @@ export default class Toolbox extends Module<ToolboxNodes> {
   public make(): void {
 
     this.nodes.toolbox = $.make('div', this.CSS.toolbox);
-    // this.nodes.toolbox.style.transform = `translate3d(0, calc(200px - 50%), 0)`
     this.addTools();
     this.enableFlipper();
   }
@@ -151,14 +150,25 @@ export default class Toolbox extends Module<ToolboxNodes> {
       return;
     }
     this.nodes.toolbox.style.removeProperty('transform');
+    this.nodes.toolbox.style.removeProperty('max-height');
     this.Editor.UI.nodes.wrapper.classList.add(this.CSS.openedToolbarHolderModifier);
     this.nodes.toolbox.classList.add(this.CSS.toolboxOpened);
 
     this.opened = true;
     this.flipper.activate();
 
-    if(this.nodes.toolbox.getBoundingClientRect().top + this.nodes.toolbox.offsetHeight > window.innerHeight) {
+
+    if(this.nodes.toolbox.getBoundingClientRect().top + this.nodes.toolbox.offsetHeight > window.innerHeight &&
+      this.nodes.toolbox.offsetHeight + 55 <= this.nodes.toolbox.getBoundingClientRect().top  ) {
       this.nodes.toolbox.style.transform = `translate3D(-50%, ${-this.nodes.toolbox.offsetHeight - 55}px, 0)`;
+    } else if((this.nodes.toolbox.getBoundingClientRect().top + this.nodes.toolbox.offsetHeight > window.innerHeight &&
+      this.nodes.toolbox.offsetHeight + 55 > this.nodes.toolbox.getBoundingClientRect().top)) {
+      this.nodes.toolbox.style.maxHeight = '200px'
+
+      if(this.nodes.toolbox.getBoundingClientRect().top + this.nodes.toolbox.offsetHeight > window.innerHeight &&
+        this.nodes.toolbox.offsetHeight + 55 <= this.nodes.toolbox.getBoundingClientRect().top  ){
+        this.nodes.toolbox.style.transform = `translate3D(-50%, ${-this.nodes.toolbox.offsetHeight - 55}px, 0)`;
+      }
     }
   }
 
@@ -251,10 +261,10 @@ export default class Toolbox extends Module<ToolboxNodes> {
      */
     const tooltipContent = this.drawTooltip(tool);
 
-    this.tooltip.onHover(button, tooltipContent, {
-      placement: 'bottom',
-      hidingDelay: 200,
-    });
+    // this.tooltip.onHover(button, tooltipContent, {
+    //   placement: 'bottom',
+    //   hidingDelay: 200,
+    // });
 
     const shortcut = tool.shortcut;
 

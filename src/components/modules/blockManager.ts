@@ -229,7 +229,6 @@ export default class BlockManager extends Module {
                         tunes: tunesData = {},
                       }: { tool: string; id?: string; data?: BlockToolData; tunes?: { [name: string]: BlockTuneData } }): Block {
     const readOnly = this.Editor.ReadOnly.isEnabled;
-    console.log(this.Editor.Tools.blockTools.get(name))
     const tool = this.Editor.Tools.blockTools.get(name);
     const block = new Block({
       id,

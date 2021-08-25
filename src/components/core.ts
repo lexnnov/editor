@@ -195,8 +195,6 @@ export default class Core {
       a: true,
     } as SanitizerConfig;
 
-    console.log(this.config)
-
     this.config.hideToolbar = this.config.hideToolbar ? this.config.hideToolbar : false;
     this.config.hideActions = this.config.hideActions ? this.config.hideActions : false;
     this.config.tools = this.config.tools || {};
