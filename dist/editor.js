@@ -13546,6 +13546,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         _.deprecationAssert(Boolean(this.config.initialBlock), 'config.initialBlock', 'config.defaultBlock');
 
         this.config.defaultBlock = this.config.defaultBlock || this.config.initialBlock || 'paragraph';
+        this.config.disabledBlocks = this.config.disabledBlocks || [];
         /**
          * Height of Editor's bottom area that allows to set focus on the last Block
          *
@@ -18302,6 +18303,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "tabPressed",
       value: function tabPressed(event) {
+        var _this = this;
+
         /**
          * Clear blocks selection by tab
          */
@@ -18311,19 +18314,26 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             InlineToolbar = _this$Editor.InlineToolbar,
             ConversionToolbar = _this$Editor.ConversionToolbar;
         var currentBlock = BlockManager.currentBlock;
+        var disableOpenOnTab = false;
+        this.Editor.BlockManager.config.disabledBlocks.forEach(function (el) {
+          if (_this.Editor.BlockManager.blocks[el].id === currentBlock.id) {
+            disableOpenOnTab = true;
+          }
+        });
 
         if (!currentBlock) {
           return;
         }
 
-        var canOpenToolbox = currentBlock.tool.isDefault && currentBlock.isEmpty;
-        var conversionToolbarOpened = !currentBlock.isEmpty && ConversionToolbar.opened;
-        var inlineToolbarOpened = !currentBlock.isEmpty && !_selection["default"].isCollapsed && InlineToolbar.opened;
+        var canOpenToolbox = currentBlock.tool.isDefault && currentBlock.isEmpty && !disableOpenOnTab;
+        var conversionToolbarOpened = !currentBlock.isEmpty && ConversionToolbar.opened && disableOpenOnTab;
+        var inlineToolbarOpened = !currentBlock.isEmpty && !_selection["default"].isCollapsed && InlineToolbar.opened && disableOpenOnTab;
         /**
          * For empty Blocks we show Plus button via Toolbox only for default Blocks
          */
 
         if (canOpenToolbox) {
+          alert('asdasd');
           this.activateToolbox();
         } else if (!conversionToolbarOpened && !inlineToolbarOpened) {
           this.activateBlockSettings();
@@ -18416,6 +18426,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             BlockManager = _this$Editor3.BlockManager,
             UI = _this$Editor3.UI;
         var currentBlock = BlockManager.currentBlock;
+        var qwer = currentBlock.id === BlockManager.blocks[0].id;
         /**
          * Don't handle Enter keydowns when Tool sets enableLineBreaks to true.
          * Uses for Tools like <code> where line breaks should be handled by default behaviour.
@@ -18447,14 +18458,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
          * If enter has been pressed at the start of the text, just insert paragraph Block above
          */
 
-        if (this.Editor.Caret.isAtStart && !this.Editor.BlockManager.currentBlock.hasMedia) {
-          this.Editor.BlockManager.insertDefaultBlockAtIndex(this.Editor.BlockManager.currentBlockIndex);
-        } else {
-          /**
-           * Split the Current Block into two blocks
-           * Renew local current node after split
-           */
-          newCurrent = this.Editor.BlockManager.split();
+        if (!qwer) {
+          if (this.Editor.Caret.isAtStart && !this.Editor.BlockManager.currentBlock.hasMedia) {
+            this.Editor.BlockManager.insertDefaultBlockAtIndex(this.Editor.BlockManager.currentBlockIndex);
+          } else {
+            /**
+             * Split the Current Block into two blocks
+             * Renew local current node after split
+             */
+            newCurrent = this.Editor.BlockManager.split();
+          }
         }
 
         this.Editor.Caret.setToBlock(newCurrent);
@@ -18462,7 +18475,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
          * If new Block is empty
          */
 
-        if (newCurrent.tool.isDefault && newCurrent.isEmpty) {
+        if (newCurrent.tool.isDefault && newCurrent.isEmpty && !qwer) {
           /**
            * Show Toolbar
            */
@@ -18491,12 +18504,18 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             Caret = _this$Editor4.Caret;
         var currentBlock = BlockManager.currentBlock;
         var tool = currentBlock.tool;
-        console.log(currentBlock);
+        var blockCanBeRemoved = true;
+        BlockManager.config.disabledBlocks.forEach(function (el) {
+          if (BlockManager.blocks[el].id === currentBlock.id) {
+            blockCanBeRemoved = false;
+          }
+        });
+        console.log(blockCanBeRemoved);
         /**
          * Check if Block should be removed by current Backspace keydown
          */
 
-        if (currentBlock.selected || currentBlock.isEmpty && currentBlock.currentInput === currentBlock.firstInput) {
+        if ((currentBlock.selected || currentBlock.isEmpty && currentBlock.currentInput === currentBlock.firstInput) && blockCanBeRemoved) {
           event.preventDefault();
           var index = BlockManager.currentBlockIndex;
 
@@ -18530,9 +18549,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         var isFirstBlock = BlockManager.currentBlockIndex === 0;
-        var canMergeBlocks = Caret.isAtStart && _selection["default"].isCollapsed && currentBlock.currentInput === currentBlock.firstInput && !isFirstBlock;
+        var canMergeBlocks = Caret.isAtStart && _selection["default"].isCollapsed && currentBlock.currentInput === currentBlock.firstInput && !isFirstBlock && blockCanBeRemoved;
 
         if (canMergeBlocks) {
+          // alert('asd')
+
           /**
            * preventing browser default behaviour
            */
@@ -18598,7 +18619,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "arrowRightAndDown",
       value: function arrowRightAndDown(event) {
-        var _this = this;
+        var _this2 = this;
 
         var isFlipperCombination = _flipper["default"].usedKeys.includes(event.keyCode) && (!event.shiftKey || event.keyCode === _.keyCodes.TAB);
         /**
@@ -18638,8 +18659,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
            */
           _.delay(function () {
             /** Check currentBlock for case when user moves selection out of Editor */
-            if (_this.Editor.BlockManager.currentBlock) {
-              _this.Editor.BlockManager.currentBlock.updateCurrentInput();
+            if (_this2.Editor.BlockManager.currentBlock) {
+              _this2.Editor.BlockManager.currentBlock.updateCurrentInput();
             }
           }, 20)();
         }
@@ -18659,7 +18680,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "arrowLeftAndUp",
       value: function arrowLeftAndUp(event) {
-        var _this2 = this;
+        var _this3 = this;
 
         /**
          * Arrows might be handled on toolbars by flipper
@@ -18700,8 +18721,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
            */
           _.delay(function () {
             /** Check currentBlock for case when user ends selection out of Editor and then press arrow-key */
-            if (_this2.Editor.BlockManager.currentBlock) {
-              _this2.Editor.BlockManager.currentBlock.updateCurrentInput();
+            if (_this3.Editor.BlockManager.currentBlock) {
+              _this3.Editor.BlockManager.currentBlock.updateCurrentInput();
             }
           }, 20)();
         }
@@ -28266,6 +28287,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "redactorClicked",
       value: function redactorClicked(event) {
+        var _this3 = this;
+
         var BlockSelection = this.Editor.BlockSelection;
 
         if (!_selection["default"].isCollapsed) {
@@ -28334,6 +28357,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
         var isDefaultBlock = this.Editor.BlockManager.currentBlock.tool.isDefault;
+        var currentBlock = this.Editor.BlockManager.currentBlock;
+        var disableShowPlusForBlocks = false;
+        this.Editor.BlockManager.config.disabledBlocks.forEach(function (el) {
+          if (_this3.Editor.BlockManager.blocks[el].id === currentBlock.id) {
+            disableShowPlusForBlocks = true;
+          }
+        });
 
         if (isDefaultBlock) {
           stopPropagation();
@@ -28343,7 +28373,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
           var isEmptyBlock = this.Editor.BlockManager.currentBlock.isEmpty;
 
-          if (isEmptyBlock) {
+          if (isEmptyBlock && !disableShowPlusForBlocks) {
             this.Editor.Toolbar.plusButton.show();
           }
         }

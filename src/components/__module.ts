@@ -38,7 +38,7 @@ export default class Module<T extends ModuleNodes = {}> {
    *
    * @type {EditorConfig}
    */
-  protected config: EditorConfig;
+  public config: EditorConfig;
 
   /**
    * Editor event dispatcher class

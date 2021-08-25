@@ -118,21 +118,30 @@ export default class BlockEvents extends Module {
      */
     this.Editor.BlockSelection.clearSelection(event);
 
-    const { BlockManager, InlineToolbar, ConversionToolbar } = this.Editor;
+    const {BlockManager, InlineToolbar, ConversionToolbar} = this.Editor;
     const currentBlock = BlockManager.currentBlock;
+
+    let disableOpenOnTab = false
+
+    this.Editor. BlockManager.config.disabledBlocks.forEach(el => {
+      if (this.Editor.BlockManager.blocks[el].id === currentBlock.id) {
+        disableOpenOnTab = true
+      }
+    })
 
     if (!currentBlock) {
       return;
     }
 
-    const canOpenToolbox = currentBlock.tool.isDefault && currentBlock.isEmpty;
-    const conversionToolbarOpened = !currentBlock.isEmpty && ConversionToolbar.opened;
-    const inlineToolbarOpened = !currentBlock.isEmpty && !SelectionUtils.isCollapsed && InlineToolbar.opened;
+    const canOpenToolbox = currentBlock.tool.isDefault && currentBlock.isEmpty && !disableOpenOnTab;
+    const conversionToolbarOpened = !currentBlock.isEmpty && ConversionToolbar.opened && disableOpenOnTab;
+    const inlineToolbarOpened = !currentBlock.isEmpty && !SelectionUtils.isCollapsed && InlineToolbar.opened && disableOpenOnTab;
 
     /**
      * For empty Blocks we show Plus button via Toolbox only for default Blocks
      */
     if (canOpenToolbox) {
+      alert('asdasd')
       this.activateToolbox();
     } else if (!conversionToolbarOpened && !inlineToolbarOpened) {
       this.activateBlockSettings();
@@ -168,7 +177,7 @@ export default class BlockEvents extends Module {
    * @param {ClipboardEvent} event - clipboard event
    */
   public handleCommandC(event: ClipboardEvent): void {
-    const { BlockSelection } = this.Editor;
+    const {BlockSelection} = this.Editor;
 
     if (!BlockSelection.anyBlockSelected) {
       return;
@@ -184,7 +193,7 @@ export default class BlockEvents extends Module {
    * @param {ClipboardEvent} event - clipboard event
    */
   public handleCommandX(event: ClipboardEvent): void {
-    const { BlockSelection, BlockManager, Caret } = this.Editor;
+    const {BlockSelection, BlockManager, Caret} = this.Editor;
 
     if (!BlockSelection.anyBlockSelected) {
       return;
@@ -211,8 +220,10 @@ export default class BlockEvents extends Module {
    * @param {KeyboardEvent} event - keydown
    */
   private enter(event: KeyboardEvent): void {
-    const { BlockManager, UI } = this.Editor;
+    const {BlockManager, UI} = this.Editor;
     const currentBlock = BlockManager.currentBlock;
+    const qwer = currentBlock.id === BlockManager.blocks[0].id
+
 
     /**
      * Don't handle Enter keydowns when Tool sets enableLineBreaks to true.
@@ -242,22 +253,25 @@ export default class BlockEvents extends Module {
     /**
      * If enter has been pressed at the start of the text, just insert paragraph Block above
      */
-    if (this.Editor.Caret.isAtStart && !this.Editor.BlockManager.currentBlock.hasMedia) {
-      this.Editor.BlockManager.insertDefaultBlockAtIndex(this.Editor.BlockManager.currentBlockIndex);
-    } else {
-      /**
-       * Split the Current Block into two blocks
-       * Renew local current node after split
-       */
-      newCurrent = this.Editor.BlockManager.split();
+    if (!qwer) {
+      if (this.Editor.Caret.isAtStart && !this.Editor.BlockManager.currentBlock.hasMedia) {
+        this.Editor.BlockManager.insertDefaultBlockAtIndex(this.Editor.BlockManager.currentBlockIndex);
+      } else {
+        /**
+         * Split the Current Block into two blocks
+         * Renew local current node after split
+         */
+        newCurrent = this.Editor.BlockManager.split();
+      }
     }
+
 
     this.Editor.Caret.setToBlock(newCurrent);
 
     /**
      * If new Block is empty
      */
-    if (newCurrent.tool.isDefault && newCurrent.isEmpty) {
+    if (newCurrent.tool.isDefault && newCurrent.isEmpty && !qwer) {
       /**
        * Show Toolbar
        */
@@ -278,16 +292,23 @@ export default class BlockEvents extends Module {
    * @param {KeyboardEvent} event - keydown
    */
   private backspace(event: KeyboardEvent): void {
-    const { BlockManager, BlockSelection, Caret } = this.Editor;
+    const {BlockManager, BlockSelection, Caret} = this.Editor;
     const currentBlock = BlockManager.currentBlock;
     const tool = currentBlock.tool;
+    let blockCanBeRemoved = true
 
-    console.log(currentBlock)
+    BlockManager.config.disabledBlocks.forEach(el => {
+      if (BlockManager.blocks[el].id === currentBlock.id) {
+        blockCanBeRemoved = false
+      }
+    })
+
+    console.log(blockCanBeRemoved)
 
     /**
      * Check if Block should be removed by current Backspace keydown
      */
-    if (currentBlock.selected || (currentBlock.isEmpty && currentBlock.currentInput === currentBlock.firstInput)) {
+    if ((currentBlock.selected || (currentBlock.isEmpty && currentBlock.currentInput === currentBlock.firstInput)) && blockCanBeRemoved) {
       event.preventDefault();
 
       const index = BlockManager.currentBlockIndex;
@@ -328,9 +349,10 @@ export default class BlockEvents extends Module {
     const canMergeBlocks = Caret.isAtStart &&
       SelectionUtils.isCollapsed &&
       currentBlock.currentInput === currentBlock.firstInput &&
-      !isFirstBlock;
+      !isFirstBlock && blockCanBeRemoved;
 
     if (canMergeBlocks) {
+      // alert('asd')
       /**
        * preventing browser default behaviour
        */
@@ -347,7 +369,7 @@ export default class BlockEvents extends Module {
    * Merge current and previous Blocks if they have the same type
    */
   private mergeBlocks(): void {
-    const { BlockManager, Caret, Toolbar } = this.Editor;
+    const {BlockManager, Caret, Toolbar} = this.Editor;
     const targetBlock = BlockManager.previousBlock;
     const blockToMerge = BlockManager.currentBlock;
 
@@ -508,10 +530,10 @@ export default class BlockEvents extends Module {
    */
   private needToolbarClosing(event: KeyboardEvent): boolean {
     const toolboxItemSelected = (event.keyCode === _.keyCodes.ENTER && this.Editor.Toolbox.opened),
-        blockSettingsItemSelected = (event.keyCode === _.keyCodes.ENTER && this.Editor.BlockSettings.opened),
-        inlineToolbarItemSelected = (event.keyCode === _.keyCodes.ENTER && this.Editor.InlineToolbar.opened),
-        conversionToolbarItemSelected = (event.keyCode === _.keyCodes.ENTER && this.Editor.ConversionToolbar.opened),
-        flippingToolbarItems = event.keyCode === _.keyCodes.TAB;
+      blockSettingsItemSelected = (event.keyCode === _.keyCodes.ENTER && this.Editor.BlockSettings.opened),
+      inlineToolbarItemSelected = (event.keyCode === _.keyCodes.ENTER && this.Editor.InlineToolbar.opened),
+      conversionToolbarItemSelected = (event.keyCode === _.keyCodes.ENTER && this.Editor.ConversionToolbar.opened),
+      flippingToolbarItems = event.keyCode === _.keyCodes.TAB;
 
     /**
      * Do not close Toolbar in cases:
