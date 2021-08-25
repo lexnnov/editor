@@ -14,7 +14,7 @@
   @media (--mobile){
     /*position: static;*/
     /*transform: none !important;*/
-    align-items: center;
+    /*align-items: center;*/
     overflow-x: auto;
   }
 
