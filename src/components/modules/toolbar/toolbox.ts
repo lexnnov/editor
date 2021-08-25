@@ -109,8 +109,9 @@ export default class Toolbox extends Module<ToolboxNodes> {
    * Makes the Toolbox
    */
   public make(): void {
-    this.nodes.toolbox = $.make('div', this.CSS.toolbox);
 
+    this.nodes.toolbox = $.make('div', this.CSS.toolbox);
+    // this.nodes.toolbox.style.transform = `translate3d(0, calc(200px - 50%), 0)`
     this.addTools();
     this.enableFlipper();
   }
@@ -149,12 +150,16 @@ export default class Toolbox extends Module<ToolboxNodes> {
     if (this.isEmpty) {
       return;
     }
-
+    this.nodes.toolbox.style.removeProperty('transform');
     this.Editor.UI.nodes.wrapper.classList.add(this.CSS.openedToolbarHolderModifier);
     this.nodes.toolbox.classList.add(this.CSS.toolboxOpened);
 
     this.opened = true;
     this.flipper.activate();
+
+    if(this.nodes.toolbox.getBoundingClientRect().top + this.nodes.toolbox.offsetHeight > window.innerHeight) {
+      this.nodes.toolbox.style.transform = `translate3D(-50%, ${-440}px, 0)`;
+    }
   }
 
   /**

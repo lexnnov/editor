@@ -141,7 +141,6 @@ export default class BlockEvents extends Module {
      * For empty Blocks we show Plus button via Toolbox only for default Blocks
      */
     if (canOpenToolbox) {
-      alert('asdasd')
       this.activateToolbox();
     } else if (!conversionToolbarOpened && !inlineToolbarOpened) {
       this.activateBlockSettings();
