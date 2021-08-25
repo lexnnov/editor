@@ -514,14 +514,15 @@ export default class Block extends EventsDispatcher<BlockEvents> {
    */
   public get pluginsContent(): HTMLElement {
     const blockContentNodes = this.holder.querySelector(`.${Block.CSS.content}`);
-
+    console.log(blockContentNodes)
     if (blockContentNodes && blockContentNodes.childNodes.length) {
       /**
        * Editors Block content can contain different Nodes from extensions
        * We use DOM isExtensionNode to ignore such Nodes and return first Block that does not match filtering list
        */
-      for (let child = blockContentNodes.childNodes.length - 1; child >= 0; child--) {
+      for (let child = blockContentNodes.childNodes.length - 2; child >= 0; child--) {
         const contentNode = blockContentNodes.childNodes[child];
+        console.log(contentNode)
 
         if (!$.isExtensionNode(contentNode)) {
           return contentNode as HTMLElement;
@@ -735,14 +736,14 @@ export default class Block extends EventsDispatcher<BlockEvents> {
         pluginsContent = this.toolInstance.render();
 
     const dnd = $.make('div', Block.CSS.dnd)
-    const remove = $.make('span', Block.CSS.remove)
+    const remove = $.make('div', Block.CSS.remove)
     const svg = $.svg('drag', 13, 13)
     dnd.appendChild(svg)
     dnd.setAttribute('draggable', 'true')
 
     contentNode.appendChild(dnd);
-    contentNode.appendChild(remove);
     contentNode.appendChild(pluginsContent);
+    contentNode.appendChild(remove);
 
     remove.addEventListener('click', ()=>{
       this.api.methods.blocks.delete(this.api.methods.blocks.getCurrentBlockIndex())
