@@ -158,7 +158,7 @@ export default class Toolbox extends Module<ToolboxNodes> {
     this.flipper.activate();
 
     if(this.nodes.toolbox.getBoundingClientRect().top + this.nodes.toolbox.offsetHeight > window.innerHeight) {
-      this.nodes.toolbox.style.transform = `translate3D(-50%, ${-440}px, 0)`;
+      this.nodes.toolbox.style.transform = `translate3D(-50%, ${-this.nodes.toolbox.offsetHeight - 55}px, 0)`;
     }
   }
 
