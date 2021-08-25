@@ -45,6 +45,15 @@
      user-select: none;
  }
 
+  &__content--remove {
+     position: absolute;
+     right: 0;
+     top: 0;
+     bottom: 0;
+     margin: auto;
+     cursor: pointer;
+   }
+
   &--drop-target &__content {
     /*&:before {*/
     /*  content: '';*/

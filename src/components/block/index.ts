@@ -104,6 +104,7 @@ export default class Block extends EventsDispatcher<BlockEvents> {
       wrapperStretched: 'ce-block--stretched',
       content: 'ce-block__content',
       dnd: 'ce-block__content--dnd',
+      remove: 'ce-block__content--remove',
       focused: 'ce-block--focused',
       selected: 'ce-block--selected',
       dropTarget: 'ce-block--drop-target',
@@ -734,12 +735,18 @@ export default class Block extends EventsDispatcher<BlockEvents> {
         pluginsContent = this.toolInstance.render();
 
     const dnd = $.make('div', Block.CSS.dnd)
+    const remove = $.make('span', Block.CSS.remove)
     const svg = $.svg('drag', 13, 13)
     dnd.appendChild(svg)
     dnd.setAttribute('draggable', 'true')
 
-    contentNode.appendChild( dnd);
+    contentNode.appendChild(dnd);
     contentNode.appendChild(pluginsContent);
+    contentNode.appendChild(remove);
+
+    remove.addEventListener('click', ()=>{
+      this.api.methods.blocks.delete(this.api.methods.blocks.getCurrentBlockIndex())
+    })
 
     /**
      * Block Tunes might wrap Block's content node to provide any UI changes
