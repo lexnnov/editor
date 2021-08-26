@@ -227,7 +227,8 @@ export default class BlockManager extends Module {
                         data = {},
                         id = undefined,
                         tunes: tunesData = {},
-                      }: { tool: string; id?: string; data?: BlockToolData; tunes?: { [name: string]: BlockTuneData } }): Block {
+                        canBeRemoved = false,
+                      }: { tool: string; id?: string; data?: BlockToolData; tunes?: { [name: string]: BlockTuneData }; canBeRemoved?:boolean }): Block {
     const readOnly = this.Editor.ReadOnly.isEnabled;
     const tool = this.Editor.Tools.blockTools.get(name);
     const block = new Block({
@@ -237,6 +238,7 @@ export default class BlockManager extends Module {
       api: this.Editor.API,
       readOnly,
       tunesData,
+      canBeRemoved
     });
 
     if (!readOnly) {
@@ -267,6 +269,7 @@ export default class BlockManager extends Module {
                   needToFocus = true,
                   replace = false,
                   tunes = {},
+                  canBeRemoved = false,
                 }: {
     id?: string;
     tool?: string;
@@ -275,6 +278,7 @@ export default class BlockManager extends Module {
     needToFocus?: boolean;
     replace?: boolean;
     tunes?: { [name: string]: BlockTuneData };
+    canBeRemoved?: boolean
   } = {}): Block {
     let newIndex = index;
 
@@ -282,11 +286,22 @@ export default class BlockManager extends Module {
       newIndex = this.currentBlockIndex + (replace ? 0 : 1);
     }
 
+    canBeRemoved = true
+
+    this.config.disabledBlocks.forEach(el => {
+
+      if (el === newIndex) {
+        canBeRemoved = false
+      }
+    })
+
+
     const block = this.composeBlock({
       id,
       tool,
       data,
       tunes,
+      canBeRemoved
     });
 
     this._blocks.insert(newIndex, block, replace);
@@ -668,7 +683,6 @@ export default class BlockManager extends Module {
      * If node is Text TextNode
      */
     if (!$.isElement(childNode)) {
-      console.log(childNode)
       childNode = childNode.parentNode;
     }
 

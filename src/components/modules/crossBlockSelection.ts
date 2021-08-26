@@ -187,7 +187,6 @@ export default class CrossBlockSelection extends Module {
   private onMouseOver = (event: MouseEvent): void => {
     const { BlockManager, BlockSelection } = this.Editor;
 
-    console.log(event)
     const relatedBlock = BlockManager.getBlockByChildNode(event.relatedTarget as Node) || this.lastSelectedBlock;
     const targetBlock = BlockManager.getBlockByChildNode(event.target as Node);
 

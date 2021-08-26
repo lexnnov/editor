@@ -727,13 +727,6 @@ export default class UI extends Module<UINodes> {
      */
     const isDefaultBlock = this.Editor.BlockManager.currentBlock.tool.isDefault;
     const currentBlock = this.Editor.BlockManager.currentBlock;
-    let disableShowPlusForBlocks = false
-
-    this.Editor. BlockManager.config.disabledBlocks.forEach(el => {
-      if (this.Editor.BlockManager.blocks[el].id === currentBlock.id) {
-        disableShowPlusForBlocks = true
-      }
-    })
 
     if (isDefaultBlock) {
       stopPropagation();
@@ -743,7 +736,7 @@ export default class UI extends Module<UINodes> {
        */
       const isEmptyBlock = this.Editor.BlockManager.currentBlock.isEmpty;
 
-      if (isEmptyBlock && !disableShowPlusForBlocks) {
+      if (isEmptyBlock && currentBlock.canBeRemoved) {
         this.Editor.Toolbar.plusButton.show();
       }
     }

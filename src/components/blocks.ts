@@ -121,6 +121,7 @@ export default class Blocks {
   public push(block: Block): void {
     this.blocks.push(block);
     this.insertToDOM(block);
+
   }
 
   /**
@@ -189,6 +190,7 @@ export default class Blocks {
    * @param {number} index — index to insert Block
    * @param {Block} block — Block to insert
    * @param {boolean} replace — it true, replace block on given index
+   * @param canBeRemoved
    */
   public insert(index: number, block: Block, replace = false): void {
     if (!this.length) {
@@ -207,6 +209,8 @@ export default class Blocks {
     }
 
     const deleteCount = replace ? 1 : 0;
+
+    // this.blocks[index].canBeRemoved = canBeRemoved
 
     this.blocks.splice(index, deleteCount, block);
 

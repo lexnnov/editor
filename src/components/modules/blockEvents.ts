@@ -121,21 +121,14 @@ export default class BlockEvents extends Module {
     const {BlockManager, InlineToolbar, ConversionToolbar} = this.Editor;
     const currentBlock = BlockManager.currentBlock;
 
-    let disableOpenOnTab = false
-
-    this.Editor. BlockManager.config.disabledBlocks.forEach(el => {
-      if (this.Editor.BlockManager.blocks[el].id === currentBlock.id) {
-        disableOpenOnTab = true
-      }
-    })
 
     if (!currentBlock) {
       return;
     }
 
-    const canOpenToolbox = currentBlock.tool.isDefault && currentBlock.isEmpty && !disableOpenOnTab;
-    const conversionToolbarOpened = !currentBlock.isEmpty && ConversionToolbar.opened && disableOpenOnTab;
-    const inlineToolbarOpened = !currentBlock.isEmpty && !SelectionUtils.isCollapsed && InlineToolbar.opened && disableOpenOnTab;
+    const canOpenToolbox = currentBlock.tool.isDefault && currentBlock.isEmpty && currentBlock.canBeRemoved;
+    const conversionToolbarOpened = !currentBlock.isEmpty && ConversionToolbar.opened && !currentBlock.canBeRemoved;
+    const inlineToolbarOpened = !currentBlock.isEmpty && !SelectionUtils.isCollapsed && InlineToolbar.opened && !currentBlock.canBeRemoved;
 
     /**
      * For empty Blocks we show Plus button via Toolbox only for default Blocks
@@ -294,20 +287,12 @@ export default class BlockEvents extends Module {
     const {BlockManager, BlockSelection, Caret} = this.Editor;
     const currentBlock = BlockManager.currentBlock;
     const tool = currentBlock.tool;
-    let blockCanBeRemoved = true
 
-    BlockManager.config.disabledBlocks.forEach(el => {
-      if (BlockManager.blocks[el].id === currentBlock.id) {
-        blockCanBeRemoved = false
-      }
-    })
-
-    console.log(blockCanBeRemoved)
 
     /**
      * Check if Block should be removed by current Backspace keydown
      */
-    if ((currentBlock.selected || (currentBlock.isEmpty && currentBlock.currentInput === currentBlock.firstInput)) && blockCanBeRemoved) {
+    if ((currentBlock.selected || (currentBlock.isEmpty && currentBlock.currentInput === currentBlock.firstInput)) && currentBlock.canBeRemoved) {
       event.preventDefault();
 
       const index = BlockManager.currentBlockIndex;
@@ -348,7 +333,7 @@ export default class BlockEvents extends Module {
     const canMergeBlocks = Caret.isAtStart &&
       SelectionUtils.isCollapsed &&
       currentBlock.currentInput === currentBlock.firstInput &&
-      !isFirstBlock && blockCanBeRemoved;
+      !isFirstBlock && currentBlock.canBeRemoved;
 
     if (canMergeBlocks) {
       // alert('asd')

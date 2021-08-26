@@ -1,7 +1,7 @@
 /*!
  * Editor.js
  * 
- * @version 0.0.22
+ * @version 0.0.23
  * 
  * @licence Apache-2.0
  * @author CodeX <https://codex.so>
@@ -11225,7 +11225,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }], [{
       key: "version",
       get: function get() {
-        return "0.0.22";
+        return "0.0.23";
       }
     }]);
     return EditorJS;
@@ -12111,7 +12111,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           tool = _ref.tool,
           api = _ref.api,
           readOnly = _ref.readOnly,
-          tunesData = _ref.tunesData;
+          tunesData = _ref.tunesData,
+          canBeRemoved = _ref.canBeRemoved;
       (0, _classCallCheck2["default"])(this, Block);
       _this = _super.call(this);
       /**
@@ -12208,6 +12209,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       _this.settings = tool.settings;
       _this.config = tool.settings.config || {};
       _this.api = api;
+      _this.canBeRemoved = canBeRemoved;
       _this.blockAPI = new _api["default"]((0, _assertThisInitialized2["default"])(_this));
       _this.mutationObserver = new MutationObserver(_this.didMutated);
       _this.tool = tool;
@@ -12801,13 +12803,17 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var svg = _dom["default"].svg('drag', 13, 13);
 
         dnd.appendChild(svg);
-        dnd.setAttribute('draggable', 'true');
+        dnd.setAttribute('draggable', 'true'); // console.log(canBeRemoved)
+
         contentNode.appendChild(dnd);
         contentNode.appendChild(pluginsContent);
-        contentNode.appendChild(remove);
-        remove.addEventListener('click', function () {
-          _this3.api.methods.blocks["delete"](_this3.api.methods.blocks.getCurrentBlockIndex());
-        });
+
+        if (this.canBeRemoved) {
+          contentNode.appendChild(remove);
+          remove.addEventListener('click', function () {
+            _this3.api.methods.blocks["delete"](_this3.api.methods.blocks.getCurrentBlockIndex());
+          });
+        }
         /**
          * Block Tunes might wrap Block's content node to provide any UI changes
          *
@@ -12817,6 +12823,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
          *   </tune1wrapper>
          * </tune2wrapper>
          */
+
 
         var wrappedContentNode = contentNode;
         [].concat((0, _toConsumableArray2["default"])(this.tunesInstances.values()), (0, _toConsumableArray2["default"])(this.defaultTunesInstances.values())).forEach(function (tune) {
@@ -13102,6 +13109,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
        * @param {number} index — index to insert Block
        * @param {Block} block — Block to insert
        * @param {boolean} replace — it true, replace block on given index
+       * @param canBeRemoved
        */
 
     }, {
@@ -13123,7 +13131,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           this.blocks[index].call(_block.BlockToolAPI.REMOVED);
         }
 
-        var deleteCount = replace ? 1 : 0;
+        var deleteCount = replace ? 1 : 0; // this.blocks[index].canBeRemoved = canBeRemoved
+
         this.blocks.splice(index, deleteCount, block);
 
         if (index > 0) {
@@ -18300,8 +18309,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "tabPressed",
       value: function tabPressed(event) {
-        var _this = this;
-
         /**
          * Clear blocks selection by tab
          */
@@ -18311,20 +18318,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             InlineToolbar = _this$Editor.InlineToolbar,
             ConversionToolbar = _this$Editor.ConversionToolbar;
         var currentBlock = BlockManager.currentBlock;
-        var disableOpenOnTab = false;
-        this.Editor.BlockManager.config.disabledBlocks.forEach(function (el) {
-          if (_this.Editor.BlockManager.blocks[el].id === currentBlock.id) {
-            disableOpenOnTab = true;
-          }
-        });
 
         if (!currentBlock) {
           return;
         }
 
-        var canOpenToolbox = currentBlock.tool.isDefault && currentBlock.isEmpty && !disableOpenOnTab;
-        var conversionToolbarOpened = !currentBlock.isEmpty && ConversionToolbar.opened && disableOpenOnTab;
-        var inlineToolbarOpened = !currentBlock.isEmpty && !_selection["default"].isCollapsed && InlineToolbar.opened && disableOpenOnTab;
+        var canOpenToolbox = currentBlock.tool.isDefault && currentBlock.isEmpty && currentBlock.canBeRemoved;
+        var conversionToolbarOpened = !currentBlock.isEmpty && ConversionToolbar.opened && !currentBlock.canBeRemoved;
+        var inlineToolbarOpened = !currentBlock.isEmpty && !_selection["default"].isCollapsed && InlineToolbar.opened && !currentBlock.canBeRemoved;
         /**
          * For empty Blocks we show Plus button via Toolbox only for default Blocks
          */
@@ -18500,18 +18501,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             Caret = _this$Editor4.Caret;
         var currentBlock = BlockManager.currentBlock;
         var tool = currentBlock.tool;
-        var blockCanBeRemoved = true;
-        BlockManager.config.disabledBlocks.forEach(function (el) {
-          if (BlockManager.blocks[el].id === currentBlock.id) {
-            blockCanBeRemoved = false;
-          }
-        });
-        console.log(blockCanBeRemoved);
         /**
          * Check if Block should be removed by current Backspace keydown
          */
 
-        if ((currentBlock.selected || currentBlock.isEmpty && currentBlock.currentInput === currentBlock.firstInput) && blockCanBeRemoved) {
+        if ((currentBlock.selected || currentBlock.isEmpty && currentBlock.currentInput === currentBlock.firstInput) && currentBlock.canBeRemoved) {
           event.preventDefault();
           var index = BlockManager.currentBlockIndex;
 
@@ -18545,7 +18539,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         var isFirstBlock = BlockManager.currentBlockIndex === 0;
-        var canMergeBlocks = Caret.isAtStart && _selection["default"].isCollapsed && currentBlock.currentInput === currentBlock.firstInput && !isFirstBlock && blockCanBeRemoved;
+        var canMergeBlocks = Caret.isAtStart && _selection["default"].isCollapsed && currentBlock.currentInput === currentBlock.firstInput && !isFirstBlock && currentBlock.canBeRemoved;
 
         if (canMergeBlocks) {
           // alert('asd')
@@ -18615,7 +18609,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "arrowRightAndDown",
       value: function arrowRightAndDown(event) {
-        var _this2 = this;
+        var _this = this;
 
         var isFlipperCombination = _flipper["default"].usedKeys.includes(event.keyCode) && (!event.shiftKey || event.keyCode === _.keyCodes.TAB);
         /**
@@ -18655,8 +18649,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
            */
           _.delay(function () {
             /** Check currentBlock for case when user moves selection out of Editor */
-            if (_this2.Editor.BlockManager.currentBlock) {
-              _this2.Editor.BlockManager.currentBlock.updateCurrentInput();
+            if (_this.Editor.BlockManager.currentBlock) {
+              _this.Editor.BlockManager.currentBlock.updateCurrentInput();
             }
           }, 20)();
         }
@@ -18676,7 +18670,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "arrowLeftAndUp",
       value: function arrowLeftAndUp(event) {
-        var _this3 = this;
+        var _this2 = this;
 
         /**
          * Arrows might be handled on toolbars by flipper
@@ -18717,8 +18711,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
            */
           _.delay(function () {
             /** Check currentBlock for case when user ends selection out of Editor and then press arrow-key */
-            if (_this3.Editor.BlockManager.currentBlock) {
-              _this3.Editor.BlockManager.currentBlock.updateCurrentInput();
+            if (_this2.Editor.BlockManager.currentBlock) {
+              _this2.Editor.BlockManager.currentBlock.updateCurrentInput();
             }
           }, 20)();
         }
@@ -19103,7 +19097,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             _ref$id = _ref.id,
             id = _ref$id === void 0 ? undefined : _ref$id,
             _ref$tunes = _ref.tunes,
-            tunesData = _ref$tunes === void 0 ? {} : _ref$tunes;
+            tunesData = _ref$tunes === void 0 ? {} : _ref$tunes,
+            _ref$canBeRemoved = _ref.canBeRemoved,
+            canBeRemoved = _ref$canBeRemoved === void 0 ? false : _ref$canBeRemoved;
         var readOnly = this.Editor.ReadOnly.isEnabled;
         var tool = this.Editor.Tools.blockTools.get(name);
         var block = new _block["default"]({
@@ -19112,7 +19108,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           tool: tool,
           api: this.Editor.API,
           readOnly: readOnly,
-          tunesData: tunesData
+          tunesData: tunesData,
+          canBeRemoved: canBeRemoved
         });
 
         if (!readOnly) {
@@ -19151,7 +19148,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             _ref2$replace = _ref2.replace,
             replace = _ref2$replace === void 0 ? false : _ref2$replace,
             _ref2$tunes = _ref2.tunes,
-            tunes = _ref2$tunes === void 0 ? {} : _ref2$tunes;
+            tunes = _ref2$tunes === void 0 ? {} : _ref2$tunes,
+            _ref2$canBeRemoved = _ref2.canBeRemoved,
+            canBeRemoved = _ref2$canBeRemoved === void 0 ? false : _ref2$canBeRemoved;
 
         var newIndex = index;
 
@@ -19159,11 +19158,18 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           newIndex = this.currentBlockIndex + (replace ? 0 : 1);
         }
 
+        canBeRemoved = true;
+        this.config.disabledBlocks.forEach(function (el) {
+          if (el === newIndex) {
+            canBeRemoved = false;
+          }
+        });
         var block = this.composeBlock({
           id: id,
           tool: tool,
           data: data,
-          tunes: tunes
+          tunes: tunes,
+          canBeRemoved: canBeRemoved
         });
 
         this._blocks.insert(newIndex, block, replace);
@@ -19623,7 +19629,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
          * If node is Text TextNode
          */
         if (!_dom["default"].isElement(childNode)) {
-          console.log(childNode);
           childNode = childNode.parentNode;
         }
 
@@ -21171,7 +21176,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var _this$Editor = _this.Editor,
             BlockManager = _this$Editor.BlockManager,
             BlockSelection = _this$Editor.BlockSelection;
-        console.log(event);
 
         var relatedBlock = BlockManager.getBlockByChildNode(event.relatedTarget) || _this.lastSelectedBlock;
 
@@ -24327,7 +24331,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return {
           time: +new Date(),
           blocks: blocks,
-          version: "0.0.22"
+          version: "0.0.23"
         };
       }
     }]);
@@ -25487,8 +25491,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           _this4.move(needToCloseToolbox);
 
           _this4.nodes.wrapper.classList.add(_this4.CSS.toolbarOpened);
-
-          console.log(_this4.nodes);
 
           if (withBlockActions) {
             _this4.blockActions.show();
@@ -28297,8 +28299,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "redactorClicked",
       value: function redactorClicked(event) {
-        var _this3 = this;
-
         var BlockSelection = this.Editor.BlockSelection;
 
         if (!_selection["default"].isCollapsed) {
@@ -28368,12 +28368,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         var isDefaultBlock = this.Editor.BlockManager.currentBlock.tool.isDefault;
         var currentBlock = this.Editor.BlockManager.currentBlock;
-        var disableShowPlusForBlocks = false;
-        this.Editor.BlockManager.config.disabledBlocks.forEach(function (el) {
-          if (_this3.Editor.BlockManager.blocks[el].id === currentBlock.id) {
-            disableShowPlusForBlocks = true;
-          }
-        });
 
         if (isDefaultBlock) {
           stopPropagation();
@@ -28383,7 +28377,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
           var isEmptyBlock = this.Editor.BlockManager.currentBlock.isEmpty;
 
-          if (isEmptyBlock && !disableShowPlusForBlocks) {
+          if (isEmptyBlock && currentBlock.canBeRemoved) {
             this.Editor.Toolbar.plusButton.show();
           }
         }
@@ -30350,7 +30344,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       argsToPass.push(args);
     }
 
-    var editorLabelText = "Editor.js ".concat("0.0.22");
+    var editorLabelText = "Editor.js ".concat("0.0.23");
     var editorLabelStyle = "line-height: 1em;\n            color: #006FEA;\n            display: inline-block;\n            font-size: 11px;\n            line-height: 1em;\n            background-color: #fff;\n            padding: 4px 9px;\n            border-radius: 30px;\n            border: 1px solid rgba(56, 138, 229, 0.16);\n            margin: 4px 5px 4px 0;";
 
     if (labeled) {

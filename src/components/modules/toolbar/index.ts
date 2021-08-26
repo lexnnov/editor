@@ -240,7 +240,6 @@ export default class Toolbar extends Module<ToolbarNodes> {
       this.move(needToCloseToolbox);
       this.nodes.wrapper.classList.add(this.CSS.toolbarOpened);
 
-      console.log(this.nodes)
 
       if (withBlockActions) {
         this.blockActions.show();
