@@ -21,6 +21,10 @@ export default class BlockEvents extends Module {
      */
     this.beforeKeydownProcessing(event);
 
+    if(event.target.parentElement.className.split(' ').indexOf('ce-block__content')==-1) {
+      return
+    }
+
     /**
      * Fire keydown processor by event.keyCode
      */
