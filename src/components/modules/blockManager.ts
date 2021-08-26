@@ -227,8 +227,9 @@ export default class BlockManager extends Module {
                         data = {},
                         id = undefined,
                         tunes: tunesData = {},
-                        canBeRemoved = false,
-                      }: { tool: string; id?: string; data?: BlockToolData; tunes?: { [name: string]: BlockTuneData }; canBeRemoved?:boolean }): Block {
+                        canBeRemoved = true,
+                        canBeEdited = true,
+                      }: { tool: string; id?: string; data?: BlockToolData; tunes?: { [name: string]: BlockTuneData }; canBeRemoved?:boolean; canBeEdited?:boolean }): Block {
     const readOnly = this.Editor.ReadOnly.isEnabled;
     const tool = this.Editor.Tools.blockTools.get(name);
     const block = new Block({
@@ -238,7 +239,8 @@ export default class BlockManager extends Module {
       api: this.Editor.API,
       readOnly,
       tunesData,
-      canBeRemoved
+      canBeRemoved,
+      canBeEdited
     });
 
     if (!readOnly) {
@@ -270,6 +272,7 @@ export default class BlockManager extends Module {
                   replace = false,
                   tunes = {},
                   canBeRemoved = false,
+                  canBeEdited = false,
                 }: {
     id?: string;
     tool?: string;
@@ -279,19 +282,28 @@ export default class BlockManager extends Module {
     replace?: boolean;
     tunes?: { [name: string]: BlockTuneData };
     canBeRemoved?: boolean
+    canBeEdited?: boolean
   } = {}): Block {
     let newIndex = index;
+    let prevIndex = index-1;
+    let nextIndex = index+1;
 
     if (newIndex === undefined) {
       newIndex = this.currentBlockIndex + (replace ? 0 : 1);
     }
 
     canBeRemoved = true
+    canBeEdited = true
 
-    this.config.disabledBlocks.forEach(el => {
-
+    this.config.disableRemoved.forEach(el => {
       if (el === newIndex) {
         canBeRemoved = false
+      }
+    })
+
+    this.config.disableEdited.forEach(el => {
+      if (el === newIndex) {
+        canBeEdited = false
       }
     })
 
@@ -301,8 +313,10 @@ export default class BlockManager extends Module {
       tool,
       data,
       tunes,
-      canBeRemoved
+      canBeRemoved,
+      canBeEdited
     });
+
 
     this._blocks.insert(newIndex, block, replace);
 
@@ -375,21 +389,42 @@ export default class BlockManager extends Module {
    *
    * TODO: Remove method and use insert() with index instead (?)
    *
+   * @param editor
    * @returns {Block} inserted Block
    */
   public insertDefaultBlockAtIndex(index: number, needToFocus = false): Block {
-    const block = this.composeBlock({tool: this.config.defaultBlock});
 
-    this._blocks[index] = block;
+
+    let canBeRemoved = true
+    let canBeEdited = true
+
+    this.config.disableEdited.forEach(el => {
+      if (el === index+1) {
+        canBeEdited = false
+      }
+    })
+
+    this.config.disableRemoved.forEach(el => {
+      if (el === index+1) {
+        canBeRemoved = false
+      }
+    })
+
+    const prevCanBeEdited =this._blocks[index-1].canBeEdited
+    const prevCanBeRemoved =this._blocks[index-1].canBeRemoved
+
+    const block = this.composeBlock({tool: this.config.defaultBlock, canBeRemoved, canBeEdited});
+
 
     /**
      * Force call of didMutated event on Block insertion
      */
     this.blockDidMutated(block);
 
+
     if (needToFocus) {
       this.currentBlockIndex = index;
-    } else if (index <= this.currentBlockIndex) {
+    } else if (index+1 <= this.currentBlockIndex) {
       this.currentBlockIndex++;
     }
 

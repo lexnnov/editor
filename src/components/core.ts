@@ -168,7 +168,8 @@ export default class Core {
     _.deprecationAssert(Boolean(this.config.initialBlock), 'config.initialBlock', 'config.defaultBlock');
     this.config.defaultBlock = this.config.defaultBlock || this.config.initialBlock || 'paragraph';
 
-    this.config.disabledBlocks = this.config.disabledBlocks || [];
+    this.config.disableEdited = this.config.disableEdited || [];
+    this.config.disableRemoved = this.config.disableRemoved || [];
 
     /**
      * Height of Editor's bottom area that allows to set focus on the last Block

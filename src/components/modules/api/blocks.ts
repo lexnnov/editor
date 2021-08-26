@@ -267,6 +267,7 @@ export default class BlocksAPI extends Module {
 
     const blockIndex = BlockManager.getBlockIndex(block);
 
+
     BlockManager.insert({
       id: block.id,
       tool: block.name,

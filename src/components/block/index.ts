@@ -49,6 +49,7 @@ interface BlockConstructorOptions {
    */
   readOnly: boolean;
   canBeRemoved: boolean;
+  canBeEdited: boolean;
 
   /**
    * Tunes data for current Block
@@ -138,6 +139,7 @@ export default class Block extends EventsDispatcher<BlockEvents> {
   public readonly holder: HTMLDivElement;
 
   public canBeRemoved: boolean;
+  public canBeEdited: boolean;
 
   /**
    * Tunes used by Tool
@@ -254,7 +256,8 @@ export default class Block extends EventsDispatcher<BlockEvents> {
                 api,
                 readOnly,
                 tunesData,
-                canBeRemoved
+                canBeRemoved,
+                canBeEdited
               }: BlockConstructorOptions) {
     super();
 
@@ -264,6 +267,7 @@ export default class Block extends EventsDispatcher<BlockEvents> {
     this.config = tool.settings.config || {};
     this.api = api;
     this.canBeRemoved = canBeRemoved;
+    this.canBeEdited = canBeEdited;
     this.blockAPI = new BlockAPI(this);
 
     this.mutationObserver = new MutationObserver(this.didMutated);

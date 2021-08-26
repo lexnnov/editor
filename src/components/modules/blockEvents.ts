@@ -126,9 +126,9 @@ export default class BlockEvents extends Module {
       return;
     }
 
-    const canOpenToolbox = currentBlock.tool.isDefault && currentBlock.isEmpty && currentBlock.canBeRemoved;
-    const conversionToolbarOpened = !currentBlock.isEmpty && ConversionToolbar.opened && !currentBlock.canBeRemoved;
-    const inlineToolbarOpened = !currentBlock.isEmpty && !SelectionUtils.isCollapsed && InlineToolbar.opened && !currentBlock.canBeRemoved;
+    const canOpenToolbox = currentBlock.tool.isDefault && currentBlock.isEmpty && currentBlock.canBeEdited;
+    const conversionToolbarOpened = !currentBlock.isEmpty && ConversionToolbar.opened && !currentBlock.canBeEdited;
+    const inlineToolbarOpened = !currentBlock.isEmpty && !SelectionUtils.isCollapsed && InlineToolbar.opened && !currentBlock.canBeEdited;
 
     /**
      * For empty Blocks we show Plus button via Toolbox only for default Blocks
@@ -214,6 +214,7 @@ export default class BlockEvents extends Module {
   private enter(event: KeyboardEvent): void {
     const {BlockManager, UI} = this.Editor;
     const currentBlock = BlockManager.currentBlock;
+    const currentBlock1 = BlockManager.nextBlock;
     const qwer = currentBlock.id === BlockManager.blocks[0].id
 
 
@@ -241,13 +242,13 @@ export default class BlockEvents extends Module {
     }
 
     let newCurrent = this.Editor.BlockManager.currentBlock;
-
     /**
      * If enter has been pressed at the start of the text, just insert paragraph Block above
      */
     if (!qwer) {
       if (this.Editor.Caret.isAtStart && !this.Editor.BlockManager.currentBlock.hasMedia) {
         this.Editor.BlockManager.insertDefaultBlockAtIndex(this.Editor.BlockManager.currentBlockIndex);
+        // newCurrent = currentBlock
       } else {
         /**
          * Split the Current Block into two blocks
@@ -263,7 +264,7 @@ export default class BlockEvents extends Module {
     /**
      * If new Block is empty
      */
-    if (newCurrent.tool.isDefault && newCurrent.isEmpty && !qwer) {
+    if (newCurrent.tool.isDefault && newCurrent.isEmpty && newCurrent.canBeEdited) {
       /**
        * Show Toolbar
        */
