@@ -16,12 +16,14 @@ import * as _ from '../utils';
 import Selection from '../selection';
 import Block from '../block';
 import Flipper from '../flipper';
+import AddBoxTools from './add/toolbox';
 
 /**
  * HTML Elements used for UI
  */
 interface UINodes {
   holder: HTMLElement;
+  adder: HTMLElement;
   wrapper: HTMLElement;
   redactor: HTMLElement;
   loader: HTMLElement;
@@ -52,13 +54,14 @@ export default class UI extends Module<UINodes> {
    * @returns {{editorWrapper: string, editorZone: string}}
    */
   public get CSS(): {
-    editorWrapper: string; editorWrapperNarrow: string; editorZone: string; editorZoneHidden: string;
+    editorWrapper: string; editorWrapperNarrow: string; editorZone: string; addZone: string; editorZoneHidden: string;
     editorLoader: string; editorEmpty: string; editorRtlFix: string;
     } {
     return {
       editorWrapper: 'codex-editor',
       editorWrapperNarrow: 'codex-editor--narrow',
       editorZone: 'codex-editor__redactor',
+      addZone: 'codex-editor__add',
       editorZoneHidden: 'codex-editor__redactor--hidden',
       editorLoader: 'codex-editor__loader',
       editorEmpty: 'codex-editor--empty',
@@ -243,6 +246,7 @@ export default class UI extends Module<UINodes> {
     InlineToolbar.close();
     ConversionToolbar.close();
     Toolbox.close();
+    // AddBoxTools.close();
   }
 
   /**
@@ -262,6 +266,7 @@ export default class UI extends Module<UINodes> {
      * @type {Element}
      */
     this.nodes.holder = $.getHolder(this.config.holder);
+    // this.nodes.adder = $.getHolder(this.config.adder);
 
     /**
      * Create and save main UI elements
@@ -271,6 +276,7 @@ export default class UI extends Module<UINodes> {
       ...(this.isRtl ? [ this.CSS.editorRtlFix ] : []),
     ]);
     this.nodes.redactor = $.make('div', this.CSS.editorZone);
+    this.nodes.adder = $.make('div', this.CSS.addZone);
 
     /**
      * If Editor has injected into the narrow container, enable Narrow Mode
@@ -286,6 +292,8 @@ export default class UI extends Module<UINodes> {
 
     this.nodes.wrapper.appendChild(this.nodes.redactor);
     this.nodes.holder.appendChild(this.nodes.wrapper);
+    this.nodes.wrapper.appendChild(this.nodes.adder);
+
   }
 
   /**
@@ -736,9 +744,9 @@ export default class UI extends Module<UINodes> {
        */
       const isEmptyBlock = this.Editor.BlockManager.currentBlock.isEmpty;
 
-      if (isEmptyBlock && currentBlock.canBeEdited) {
+      // if (isEmptyBlock && currentBlock.canBeEdited) {
         this.Editor.Toolbar.plusButton.show();
-      }
+      // }
     }
   }
 

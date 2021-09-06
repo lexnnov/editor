@@ -285,8 +285,6 @@ export default class BlockManager extends Module {
     canBeEdited?: boolean
   } = {}): Block {
     let newIndex = index;
-    let prevIndex = index-1;
-    let nextIndex = index+1;
 
     if (newIndex === undefined) {
       newIndex = this.currentBlockIndex + (replace ? 0 : 1);
@@ -295,17 +293,87 @@ export default class BlockManager extends Module {
     canBeRemoved = true
     canBeEdited = true
 
-    this.config.disableRemoved.forEach(el => {
-      if (el === newIndex) {
-        canBeRemoved = false
-      }
-    })
+    // this.config.disableRemoved.forEach(el => {
+    //   if (el === newIndex) {
+    //     canBeRemoved = false
+    //   }
+    // })
+    //
+    // this.config.disableEdited.forEach(el => {
+    //   if (el === newIndex) {
+    //     canBeEdited = false
+    //   }
+    // })
 
-    this.config.disableEdited.forEach(el => {
-      if (el === newIndex) {
-        canBeEdited = false
-      }
-    })
+
+    const block = this.composeBlock({
+      id,
+      tool,
+      data,
+      tunes,
+      canBeRemoved,
+      canBeEdited
+    });
+
+
+    this._blocks.insert(newIndex, block, replace);
+
+    /**
+     * Force call of didMutated event on Block insertion
+     */
+    this.blockDidMutated(block);
+
+    if (needToFocus) {
+      this.currentBlockIndex = newIndex;
+    } else if (newIndex <= this.currentBlockIndex) {
+      this.currentBlockIndex++;
+    }
+
+    return block;
+  }
+
+
+  public insertToEnd({
+                  id = undefined,
+                  tool = this.config.defaultBlock,
+                  data = {},
+                  index,
+                  needToFocus = true,
+                  replace = false,
+                  tunes = {},
+                  canBeRemoved = false,
+                  canBeEdited = false,
+                }: {
+    id?: string;
+    tool?: string;
+    data?: BlockToolData;
+    index?: number;
+    needToFocus?: boolean;
+    replace?: boolean;
+    tunes?: { [name: string]: BlockTuneData };
+    canBeRemoved?: boolean
+    canBeEdited?: boolean
+  } = {}): Block {
+    let newIndex = index;
+
+    if (newIndex === undefined) {
+      newIndex = this.currentBlockIndex + (replace ? 0 : 1);
+    }
+
+    canBeRemoved = true
+    canBeEdited = true
+
+    // this.config.disableRemoved.forEach(el => {
+    //   if (el === newIndex) {
+    //     canBeRemoved = false
+    //   }
+    // })
+    //
+    // this.config.disableEdited.forEach(el => {
+    //   if (el === newIndex) {
+    //     canBeEdited = false
+    //   }
+    // })
 
 
     const block = this.composeBlock({
@@ -398,17 +466,17 @@ export default class BlockManager extends Module {
     let canBeRemoved = true
     let canBeEdited = true
 
-    this.config.disableEdited.forEach(el => {
-      if (el === index+1) {
-        canBeEdited = false
-      }
-    })
-
-    this.config.disableRemoved.forEach(el => {
-      if (el === index+1) {
-        canBeRemoved = false
-      }
-    })
+    // this.config.disableEdited.forEach(el => {
+    //   if (el === index+1) {
+    //     canBeEdited = false
+    //   }
+    // })
+    //
+    // this.config.disableRemoved.forEach(el => {
+    //   if (el === index+1) {
+    //     canBeRemoved = false
+    //   }
+    // })
 
     const prevCanBeEdited =this._blocks[index-1].canBeEdited
     const prevCanBeRemoved =this._blocks[index-1].canBeRemoved

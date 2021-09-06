@@ -168,7 +168,7 @@ export default class Core {
     _.deprecationAssert(Boolean(this.config.initialBlock), 'config.initialBlock', 'config.defaultBlock');
     this.config.defaultBlock = this.config.defaultBlock || this.config.initialBlock || 'paragraph';
 
-    this.config.disableEdited = this.config.disableEdited || [];
+    this.config.disabledEdited = this.config.disabledEdited || [];
     this.config.disableRemoved = this.config.disableRemoved || [];
 
     /**

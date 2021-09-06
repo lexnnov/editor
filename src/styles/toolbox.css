@@ -1,4 +1,25 @@
-.ce-toolbox {
+.codex-editor__add {
+  margin-left: auto;
+  position: absolute;
+  width: 100%;
+  bottom: 250px;
+}
+
+.ce-adder__content {
+  display: flex;
+  justify-content: center;
+
+  div {
+    cursor: pointer;
+
+  }
+}
+
+.ce-toolbox-add {
+  margin-top: 45px;
+}
+
+.ce-toolbox, .ce-toolbox-add {
   position: absolute;
   visibility: hidden;
   transition: opacity 100ms ease;

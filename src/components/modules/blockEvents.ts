@@ -16,12 +16,13 @@ export default class BlockEvents extends Module {
    * @param {KeyboardEvent} event - keydown
    */
   public keydown(event: KeyboardEvent): void {
+    const target = event.target as HTMLTextAreaElement;
     /**
      * Run common method for all keydown events
      */
     this.beforeKeydownProcessing(event);
 
-    if(event.target.parentElement.className.split(' ').indexOf('ce-block__content')==-1) {
+    if(target.parentElement.className.split(' ').indexOf('ce-block__content')==-1) {
       return
     }
 
@@ -294,6 +295,7 @@ export default class BlockEvents extends Module {
     const tool = currentBlock.tool;
 
 
+    console.log(currentBlock)
     /**
      * Check if Block should be removed by current Backspace keydown
      */

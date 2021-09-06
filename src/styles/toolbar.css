@@ -63,7 +63,7 @@
   }
 
   &__plus,
-  .ce-toolbox {
+  .ce-toolbox, .ce-toolbox__add {
     top: 50%;
     left: 50%;
     transform: translateY(-50%);
@@ -129,4 +129,12 @@
 .codex-editor--narrow .ce-toolbar__plus {
   @media (--not-mobile) {
   }
+}
+
+.ce-toolbox-add {
+  display: none;
+&--opened {
+   display: block;
+
+ }
 }

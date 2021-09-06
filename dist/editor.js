@@ -1,7 +1,7 @@
 /*!
  * Editor.js
  * 
- * @version 0.0.26
+ * @version 0.0.27
  * 
  * @licence Apache-2.0
  * @author CodeX <https://codex.so>
@@ -11225,7 +11225,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }], [{
       key: "version",
       get: function get() {
-        return "0.0.26";
+        return "0.0.27";
       }
     }]);
     return EditorJS;
@@ -12794,8 +12794,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       value: function compose() {
         var _this3 = this;
 
+        // alert('11')
         var wrapper = _dom["default"].make('div', Block.CSS.wrapper),
             contentNode = _dom["default"].make('div', Block.CSS.content),
+            add = _dom["default"].make('div', Block.CSS.add),
             pluginsContent = this.toolInstance.render();
 
         var dnd = _dom["default"].make('div', Block.CSS.dnd);
@@ -12804,7 +12806,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         var svg = _dom["default"].svg('drag', 13, 13);
 
+        var svg1 = _dom["default"].svg('plus', 13, 13);
+
         dnd.appendChild(svg);
+        add.appendChild(svg1);
         dnd.setAttribute('draggable', 'true'); // console.log(canBeRemoved)
 
         contentNode.appendChild(dnd);
@@ -12838,6 +12843,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
         });
         wrapper.appendChild(wrappedContentNode);
+        wrapper.appendChild(add);
         return wrapper;
       }
       /**
@@ -12914,6 +12920,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           wrapper: 'ce-block',
           wrapperStretched: 'ce-block--stretched',
           content: 'ce-block__content',
+          add: 'ce-block__add',
           dnd: 'ce-block__content--dnd',
           remove: 'ce-block__content--remove',
           focused: 'ce-block--focused',
@@ -13555,7 +13562,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         _.deprecationAssert(Boolean(this.config.initialBlock), 'config.initialBlock', 'config.defaultBlock');
 
         this.config.defaultBlock = this.config.defaultBlock || this.config.initialBlock || 'paragraph';
-        this.config.disableEdited = this.config.disableEdited || [];
+        this.config.disabledEdited = this.config.disabledEdited || [];
         this.config.disableRemoved = this.config.disableRemoved || [];
         /**
          * Height of Editor's bottom area that allows to set focus on the last Block
@@ -16064,6 +16071,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
+	"./add": "./src/components/modules/add/index.ts",
+	"./add/": "./src/components/modules/add/index.ts",
+	"./add/index": "./src/components/modules/add/index.ts",
+	"./add/index.ts": "./src/components/modules/add/index.ts",
+	"./add/toolbox": "./src/components/modules/add/toolbox.ts",
+	"./add/toolbox.ts": "./src/components/modules/add/toolbox.ts",
 	"./api": "./src/components/modules/api/index.ts",
 	"./api/": "./src/components/modules/api/index.ts",
 	"./api/blocks": "./src/components/modules/api/blocks.ts",
@@ -16157,6 +16170,958 @@ webpackContext.keys = function webpackContextKeys() {
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
 webpackContext.id = "./src/components/modules sync recursive ^\\.\\/.*$";
+
+/***/ }),
+
+/***/ "./src/components/modules/add/index.ts":
+/*!*********************************************!*\
+  !*** ./src/components/modules/add/index.ts ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var _typeof = __webpack_require__(/*! @babel/runtime/helpers/typeof */ "./node_modules/@babel/runtime/helpers/typeof.js");
+
+(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/classCallCheck.js"), __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/createClass.js"), __webpack_require__(/*! @babel/runtime/helpers/inherits */ "./node_modules/@babel/runtime/helpers/inherits.js"), __webpack_require__(/*! @babel/runtime/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/possibleConstructorReturn.js"), __webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/getPrototypeOf.js"), __webpack_require__(/*! ../../__module */ "./src/components/__module.ts"), __webpack_require__(/*! ../../dom */ "./src/components/dom.ts"), __webpack_require__(/*! ../../utils */ "./src/components/utils.ts"), __webpack_require__(/*! ../../i18n */ "./src/components/i18n/index.ts"), __webpack_require__(/*! ../../i18n/namespace-internal */ "./src/components/i18n/namespace-internal.ts"), __webpack_require__(/*! ../../utils/tooltip */ "./src/components/utils/tooltip.ts")], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else { var mod; }
+})(typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : this, function (_exports, _classCallCheck2, _createClass2, _inherits2, _possibleConstructorReturn2, _getPrototypeOf2, _module, _dom, _, _i18n, _namespaceInternal, _tooltip) {
+  "use strict";
+
+  var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ "./node_modules/@babel/runtime/helpers/interopRequireDefault.js");
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports["default"] = void 0;
+  _classCallCheck2 = _interopRequireDefault(_classCallCheck2);
+  _createClass2 = _interopRequireDefault(_createClass2);
+  _inherits2 = _interopRequireDefault(_inherits2);
+  _possibleConstructorReturn2 = _interopRequireDefault(_possibleConstructorReturn2);
+  _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf2);
+  _module = _interopRequireDefault(_module);
+  _dom = _interopRequireDefault(_dom);
+  _ = _interopRequireWildcard(_);
+  _i18n = _interopRequireDefault(_i18n);
+  _tooltip = _interopRequireDefault(_tooltip);
+
+  function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+  function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+  function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0, _getPrototypeOf2["default"])(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2["default"])(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2["default"])(this, result); }; }
+
+  function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+  /**
+   *
+   * «Toolbar» is the node that moves up/down over current block
+   *
+   *  ______________________________________ Toolbar ____________________________________________
+   * |                                                                                           |
+   * |  ..................... Content .........................................................  |
+   * |  .                                                   ........ Block Actions ...........   |
+   * |  .                                                   .        [Open Settings]         .   |
+   * |  .  [Plus Button]  [Toolbox: {Tool1}, {Tool2}]       .                                .   |
+   * |  .                                                   .        [Settings Panel]        .   |
+   * |  .                                                   ..................................   |
+   * |  .......................................................................................  |
+   * |                                                                                           |
+   * |___________________________________________________________________________________________|
+   *
+   *
+   * Toolbox — its an Element contains tools buttons. Can be shown by Plus Button.
+   *
+   *  _______________ Toolbox _______________
+   * |                                       |
+   * | [Header] [Image] [List] [Quote] ...   |
+   * |_______________________________________|
+   *
+   *
+   * Settings Panel — is an Element with block settings:
+   *
+   *   ____ Settings Panel ____
+   *  | ...................... |
+   *  | .   Tool Settings    . |
+   *  | ...................... |
+   *  | .  Default Settings  . |
+   *  | ...................... |
+   *  |________________________|
+   *
+   *
+   * @class
+   * @classdesc Toolbar module
+   *
+   * @typedef {Toolbar} Toolbar
+   * @property {object} nodes - Toolbar nodes
+   * @property {Element} nodes.wrapper        - Toolbar main element
+   * @property {Element} nodes.adder        - Toolbar main element
+   * @property {Element} nodes.content        - Zone with Plus button and toolbox.
+   * @property {Element} nodes.actions        - Zone with Block Settings and Remove Button
+   * @property {Element} nodes.blockActionsButtons   - Zone with Block Buttons: [Settings]
+   * @property {Element} nodes.plusButton     - Button that opens or closes Toolbox
+   * @property {Element} nodes.toolbox        - Container for tools
+   * @property {Element} nodes.settingsToggler - open/close Settings Panel button
+   * @property {Element} nodes.settings          - Settings Panel
+   * @property {Element} nodes.pluginSettings    - Plugin Settings section of Settings Panel
+   * @property {Element} nodes.defaultSettings   - Default Settings section of Settings Panel
+   */
+  var AddBox = /*#__PURE__*/function (_Module) {
+    (0, _inherits2["default"])(AddBox, _Module);
+
+    var _super = _createSuper(AddBox);
+
+    /**
+     * @class
+     * @param {object} moduleConfiguration - Module Configuration
+     * @param {EditorConfig} moduleConfiguration.config - Editor's config
+     * @param {EventsDispatcher} moduleConfiguration.eventsDispatcher - Editor's event dispatcher
+     */
+    function AddBox(_ref) {
+      var _this;
+
+      var config = _ref.config,
+          eventsDispatcher = _ref.eventsDispatcher;
+      (0, _classCallCheck2["default"])(this, AddBox);
+      _this = _super.call(this, {
+        config: config,
+        eventsDispatcher: eventsDispatcher
+      });
+      _this.tooltip = new _tooltip["default"]();
+      return _this;
+    }
+    /**
+     * CSS styles
+     *
+     * @returns {object}
+     */
+
+
+    (0, _createClass2["default"])(AddBox, [{
+      key: "CSS",
+      get: function get() {
+        return {
+          toolbar: 'ce-adder',
+          content: 'ce-adder__content',
+          // actions: 'ce-toolbar__actions',
+          // actionsOpened: 'ce-toolbar__actions--opened',
+          // adder: 'ce-toolbar__adder',
+          toolbarOpened: 'ce-adder--opened'
+        };
+      }
+      /**
+       * Returns the Toolbar opening state
+       *
+       * @returns {boolean}
+       */
+
+    }, {
+      key: "opened",
+      get: function get() {
+        return this.nodes.wrapper.classList.contains(this.CSS.toolbarOpened);
+      }
+      /**
+       * Plus Button public methods
+       *
+       * @returns {{hide: function(): void, show: function(): void}}
+       */
+
+    }, {
+      key: "plusButton",
+      get: function get() {
+        var _this2 = this;
+
+        return {
+          hide: function hide() {
+            return _this2.nodes.plusButton.classList.add(_this2.CSS.plusButtonHidden);
+          },
+          show: function show() {
+            if (_this2.Editor.Toolbox.isEmpty) {
+              return;
+            }
+
+            _this2.nodes.plusButton.classList.remove(_this2.CSS.plusButtonHidden);
+          }
+        };
+      }
+      /**
+       * Block actions appearance manipulations
+       *
+       * @returns {{hide: function(): void, show: function(): void}}
+       */
+      // private get blockActions(): { hide: () => void; show: () => void } {
+      //   return {
+      //     hide: (): void => {
+      //       this.nodes.actions.classList.remove(this.CSS.actionsOpened);
+      //     },
+      //     show: (): void => {
+      //       this.nodes.actions.classList.add(this.CSS.actionsOpened);
+      //     },
+      //   };
+      // }
+
+      /**
+       * Toggles read-only mode
+       *
+       * @param {boolean} readOnlyEnabled - read-only mode
+       */
+
+    }, {
+      key: "toggleReadOnly",
+      value: function toggleReadOnly(readOnlyEnabled) {
+        if (!readOnlyEnabled) {
+          this.drawUI();
+          this.enableModuleBindings();
+        } else {
+          this.destroy();
+          this.Editor.Toolbox.destroy();
+          this.Editor.BlockSettings.destroy();
+          this.disableModuleBindings();
+        }
+      }
+      /**
+       * Move Toolbar to the Current Block
+       *
+       * @param {boolean} forceClose - force close Toolbar Settings and Toolbar
+       */
+
+    }, {
+      key: "move",
+      value: function move() {
+        var forceClose = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+        if (forceClose) {
+          /** Close Toolbox when we move toolbar */
+          this.Editor.Toolbox.close();
+          this.Editor.BlockSettings.close();
+        }
+
+        var currentBlock = this.Editor.BlockManager.currentBlock.holder;
+        /**
+         * If no one Block selected as a Current
+         */
+
+        if (!currentBlock) {
+          return;
+        }
+
+        var isMobile = this.Editor.UI.isMobile;
+        var blockHeight = currentBlock.offsetHeight;
+        var toolbarY = currentBlock.offsetTop;
+        /**
+         * 1) On desktop — Toolbar at the top of Block, Plus/Toolbox moved the center of Block
+         * 2) On mobile — Toolbar at the bottom of Block
+         */
+
+        if (!isMobile) {
+          var contentOffset = Math.floor(blockHeight / 2); // this.nodes.plusButton.style.transform = `translate3d(0, calc(${contentOffset}px - 50%), 0)`;
+          // this.Editor.Toolbox.nodes.toolbox.style.transform = `translate3d(0, calc(${contentOffset}px - 50%), 0)`;
+        } else {
+          toolbarY += blockHeight;
+        }
+        /**
+         * Move Toolbar to the Top coordinate of Block
+         */
+
+
+        this.nodes.wrapper.style.transform = "translate3D(0, ".concat(Math.floor(toolbarY), "px, 0)");
+      }
+      /**
+       * Open Toolbar with Plus Button and Actions
+       *
+       * @param {boolean} withBlockActions - by default, Toolbar opens with Block Actions.
+       *                                     This flag allows to open Toolbar without Actions.
+       * @param {boolean} needToCloseToolbox - by default, Toolbar will be moved with opening
+       *                                      (by click on Block, or by enter)
+       *                                      with closing Toolbox and Block Settings
+       *                                      This flag allows to open Toolbar with Toolbox
+       */
+
+    }, {
+      key: "open",
+      value: function open() {
+        var _this3 = this;
+
+        var withBlockActions = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+        var needToCloseToolbox = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+        _.delay(function () {
+          _this3.move(needToCloseToolbox);
+
+          _this3.nodes.wrapper.classList.add(_this3.CSS.toolbarOpened); // if (withBlockActions) {
+          //   this.blockActions.show();
+          // } else {
+          //   this.blockActions.hide();
+          // }
+
+        }, 50)();
+      }
+      /**
+       * Close the Toolbar
+       */
+
+    }, {
+      key: "close",
+      value: function close() {
+        this.nodes.wrapper.classList.remove(this.CSS.toolbarOpened);
+        /** Close components */
+        // this.blockActions.hide();
+
+        this.Editor.AddBoxTools.close();
+        this.Editor.BlockSettings.close();
+      }
+      /**
+       * Draws Toolbar elements
+       */
+
+    }, {
+      key: "make",
+      value: function make() {
+        var _this4 = this;
+
+        var isMobile = this.Editor.UI.isMobile;
+        console.log(this.CSS.toolbar);
+        this.nodes.wrapper = _dom["default"].make('div', this.CSS.toolbar); // const adder = $.make('div', 'qwer')
+        // adder.addEventListener('click',  ()=> {
+        //   this.plusButtonClicked();
+        // })
+        // $.append(adder, $.svg('plus', 40, 40));
+
+        /**
+         * Make Content Zone and Actions Zone
+         */
+
+        ['content', 'actions'].forEach(function (el) {
+          _this4.nodes[el] = _dom["default"].make('div', _this4.CSS[el]);
+        });
+        /**
+         * Actions will be included to the toolbar content so we can align in to the right of the content
+         */
+
+        _dom["default"].append(this.nodes.wrapper, this.nodes.content); // $.append(this.nodes.content, this.nodes.actions);
+
+
+        _dom["default"].append(_dom["default"].find(document, '.codex-editor__add'), this.nodes.content);
+        /**
+         * Fill Content Zone:
+         *  - Plus Button
+         *  - Toolbox
+         */
+
+
+        this.nodes.plusButton = _dom["default"].make('div', this.CSS.plusButton);
+
+        _dom["default"].append(this.nodes.plusButton, _dom["default"].svg('plus', 40, 40));
+
+        _dom["default"].append(this.nodes.content, this.nodes.plusButton);
+
+        this.readOnlyMutableListeners.on(this.nodes.plusButton, 'click', function () {
+          _this4.plusButtonClicked();
+        }, false);
+        /**
+         * Add events to show/hide tooltip for plus button
+         */
+
+        var tooltipContent = _dom["default"].make('div');
+
+        tooltipContent.appendChild(document.createTextNode(_i18n["default"].ui(_namespaceInternal.I18nInternalNS.ui.toolbar.toolbox, 'Add'))); // tooltipContent.appendChild($.make('div', this.CSS.plusButtonShortcut, {
+        //   textContent: '⇥ Tab',
+        // }));
+
+        if (!isMobile) {
+          this.tooltip.onHover(this.nodes.plusButton, tooltipContent);
+        }
+        /**
+         * Fill Actions Zone:
+         *  - Settings Toggler
+         *  - Remove Block Button
+         *  - Settings Panel
+         */
+        // this.nodes.blockActionsButtons = $.make('div', this.CSS.blockActionsButtons);
+        // this.nodes.settingsToggler = $.make('span', this.CSS.settingsToggler);
+
+
+        var settingsIcon = _dom["default"].svg('dots', 8, 8); // $.append(this.nodes.settingsToggler, settingsIcon);
+        // $.append(this.nodes.blockActionsButtons, this.nodes.settingsToggler);
+        // $.append(this.nodes.actions, this.nodes.blockActionsButtons);
+        // this.tooltip.onHover(
+        //   // this.nodes.settingsToggler,
+        //   // I18n.ui(I18nInternalNS.ui.blockTunes.toggler, 'Click to tune'),
+        //   {
+        //     placement: 'top',
+        //   }
+        // );
+
+        /**
+         * Appending Toolbar components to itself
+         */
+
+
+        console.log(this.nodes);
+
+        _dom["default"].append(this.nodes.content, this.Editor.AddBoxTools.nodes.toolbox); // $.append(this.nodes.actions, this.Editor.BlockSettings.nodes.wrapper);
+
+        /**
+         * Append toolbar to the Editor
+         */
+        // $.append(this.Editor.UI.nodes.wrapper, this.nodes.wrapper);
+
+      }
+      /**
+       * Handler for Plus Button
+       */
+
+    }, {
+      key: "plusButtonClicked",
+      value: function plusButtonClicked() {
+        this.Editor.AddBoxTools.toggle();
+      }
+      /**
+       * Enable bindings
+       */
+
+    }, {
+      key: "enableModuleBindings",
+      value: function enableModuleBindings() {
+        /**
+         * Settings toggler
+         *
+         * mousedown is used because on click selection is lost in Safari and FF
+         */
+        // this.readOnlyMutableListeners.on(this.nodes.settingsToggler, 'mousedown', (e) => {
+        //   /**
+        //    * Stop propagation to prevent block selection clearance
+        //    *
+        //    * @see UI.documentClicked
+        //    */
+        //   e.stopPropagation();
+        //
+        //   this.settingsTogglerClicked();
+        // }, true);
+      }
+      /**
+       * Disable bindings
+       */
+
+    }, {
+      key: "disableModuleBindings",
+      value: function disableModuleBindings() {
+        this.readOnlyMutableListeners.clearAll();
+      }
+      /**
+       * Clicks on the Block Settings toggler
+       */
+
+    }, {
+      key: "settingsTogglerClicked",
+      value: function settingsTogglerClicked() {
+        if (this.Editor.BlockSettings.opened) {
+          this.Editor.BlockSettings.close();
+        } else {
+          this.Editor.BlockSettings.open();
+        }
+      }
+      /**
+       * Draws Toolbar UI
+       *
+       * Toolbar contains BlockSettings and Toolbox.
+       * Thats why at first we draw its components and then Toolbar itself
+       *
+       * Steps:
+       *  - Make Toolbar dependent components like BlockSettings, Toolbox and so on
+       *  - Make itself and append dependent nodes to itself
+       *
+       */
+
+    }, {
+      key: "drawUI",
+      value: function drawUI() {
+        /**
+         * Make BlockSettings Panel
+         */
+        this.Editor.BlockSettings.make();
+        /**
+         * Make Toolbox
+         */
+
+        this.Editor.AddBoxTools.make();
+        /**
+         * Make Toolbar
+         */
+
+        this.make();
+      }
+      /**
+       * Removes all created and saved HTMLElements
+       * It is used in Read-Only mode
+       */
+
+    }, {
+      key: "destroy",
+      value: function destroy() {
+        this.removeAllNodes();
+        this.tooltip.destroy();
+      }
+    }]);
+    return AddBox;
+  }(_module["default"]);
+
+  _exports["default"] = AddBox;
+  AddBox.displayName = "AddBox";
+  module.exports = exports.default;
+});
+
+/***/ }),
+
+/***/ "./src/components/modules/add/toolbox.ts":
+/*!***********************************************!*\
+  !*** ./src/components/modules/add/toolbox.ts ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var _typeof = __webpack_require__(/*! @babel/runtime/helpers/typeof */ "./node_modules/@babel/runtime/helpers/typeof.js");
+
+(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/classCallCheck.js"), __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/createClass.js"), __webpack_require__(/*! @babel/runtime/helpers/inherits */ "./node_modules/@babel/runtime/helpers/inherits.js"), __webpack_require__(/*! @babel/runtime/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/possibleConstructorReturn.js"), __webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/getPrototypeOf.js"), __webpack_require__(/*! ../../__module */ "./src/components/__module.ts"), __webpack_require__(/*! ../../dom */ "./src/components/dom.ts"), __webpack_require__(/*! ../../utils */ "./src/components/utils.ts"), __webpack_require__(/*! ../../flipper */ "./src/components/flipper.ts"), __webpack_require__(/*! ../../block */ "./src/components/block/index.ts"), __webpack_require__(/*! ../../i18n */ "./src/components/i18n/index.ts"), __webpack_require__(/*! ../../i18n/namespace-internal */ "./src/components/i18n/namespace-internal.ts"), __webpack_require__(/*! ../../utils/tooltip */ "./src/components/utils/tooltip.ts")], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else { var mod; }
+})(typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : this, function (_exports, _classCallCheck2, _createClass2, _inherits2, _possibleConstructorReturn2, _getPrototypeOf2, _module, _dom, _, _flipper, _block, _i18n, _namespaceInternal, _tooltip) {
+  "use strict";
+
+  var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ "./node_modules/@babel/runtime/helpers/interopRequireDefault.js");
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports["default"] = void 0;
+  _classCallCheck2 = _interopRequireDefault(_classCallCheck2);
+  _createClass2 = _interopRequireDefault(_createClass2);
+  _inherits2 = _interopRequireDefault(_inherits2);
+  _possibleConstructorReturn2 = _interopRequireDefault(_possibleConstructorReturn2);
+  _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf2);
+  _module = _interopRequireDefault(_module);
+  _dom = _interopRequireDefault(_dom);
+  _ = _interopRequireWildcard(_);
+  _flipper = _interopRequireDefault(_flipper);
+  _i18n = _interopRequireDefault(_i18n);
+  _tooltip = _interopRequireDefault(_tooltip);
+
+  function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+  function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+  function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0, _getPrototypeOf2["default"])(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2["default"])(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2["default"])(this, result); }; }
+
+  function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+  /**
+   * @class Toolbox
+   * @classdesc Holder for Tools
+   *
+   * @typedef {Toolbox} Toolbox
+   * @property {boolean} opened - opening state
+   * @property {object} nodes   - Toolbox nodes
+   * @property {object} CSS     - CSS class names
+   *
+   */
+  var AddBoxTools = /*#__PURE__*/function (_Module) {
+    (0, _inherits2["default"])(AddBoxTools, _Module);
+
+    var _super = _createSuper(AddBoxTools);
+
+    /**
+     * @class
+     * @param {object} moduleConfiguration - Module Configuration
+     * @param {EditorConfig} moduleConfiguration.config - Editor's config
+     * @param {EventsDispatcher} moduleConfiguration.eventsDispatcher - Editor's event dispatcher
+     */
+    function AddBoxTools(_ref) {
+      var _this;
+
+      var config = _ref.config,
+          eventsDispatcher = _ref.eventsDispatcher;
+      (0, _classCallCheck2["default"])(this, AddBoxTools);
+      _this = _super.call(this, {
+        config: config,
+        eventsDispatcher: eventsDispatcher
+      });
+      /**
+       * Current module HTML Elements
+       */
+
+      _this.nodes = {
+        toolbox: null,
+        buttons: []
+      };
+      /**
+       * Opening state
+       *
+       * @type {boolean}
+       */
+
+      _this.opened = false;
+      /**
+       * How many tools displayed in Toolbox
+       *
+       * @type {number}
+       */
+
+      _this.displayedToolsCount = 0;
+      /**
+       * Instance of class that responses for leafing buttons by arrows/tab
+       *
+       * @type {Flipper|null}
+       */
+
+      _this.flipper = null;
+      _this.tooltip = new _tooltip["default"]();
+      return _this;
+    }
+    /**
+     * CSS styles
+     *
+     * @returns {object.<string, string>}
+     */
+
+
+    (0, _createClass2["default"])(AddBoxTools, [{
+      key: "CSS",
+      get: function get() {
+        return {
+          toolbox: 'ce-toolbox-add',
+          toolboxButton: 'ce-toolbox-add__button',
+          toolboxSpan: 'ce-toolbox-add__span',
+          toolboxButtonActive: 'ce-toolbox-add__button--active',
+          toolboxOpened: 'ce-toolbox-add--opened',
+          openedToolbarHolderModifier: 'codex-editor--toolbox-opened',
+          buttonTooltip: 'ce-toolbox-add-button-tooltip',
+          buttonShortcut: 'ce-toolbox-add-button-tooltip__shortcut'
+        };
+      }
+      /**
+       * Returns True if Toolbox is Empty and nothing to show
+       *
+       * @returns {boolean}
+       */
+
+    }, {
+      key: "isEmpty",
+      get: function get() {
+        return this.displayedToolsCount === 0;
+      }
+      /**
+       * Makes the Toolbox
+       */
+
+    }, {
+      key: "make",
+      value: function make() {
+        this.nodes.toolbox = _dom["default"].make('div', this.CSS.toolbox);
+        this.addTools();
+        this.enableFlipper();
+      }
+      /**
+       * Destroy Module
+       */
+
+    }, {
+      key: "destroy",
+      value: function destroy() {
+        /**
+         * Sometimes (in read-only mode) there is no Flipper
+         */
+        if (this.flipper) {
+          this.flipper.deactivate();
+          this.flipper = null;
+        }
+
+        this.removeAllNodes(); // this.removeAllShortcuts();
+
+        this.tooltip.destroy();
+      }
+      /**
+       * Toolbox Tool's button click handler
+       *
+       * @param {MouseEvent|KeyboardEvent} event - event that activates toolbox button
+       * @param {string} toolName - button to activate
+       */
+
+    }, {
+      key: "toolButtonActivate",
+      value: function toolButtonActivate(event, toolName) {
+        this.insertNewBlock(toolName);
+      }
+      /**
+       * Open Toolbox with Tools
+       */
+
+    }, {
+      key: "open",
+      value: function open() {
+        // if (this.isEmpty) {
+        //   return;
+        // }
+        console.log(this.nodes.toolbox);
+        this.nodes.toolbox.style.removeProperty('transform');
+        this.nodes.toolbox.style.removeProperty('max-height');
+        this.Editor.UI.nodes.wrapper.classList.add(this.CSS.openedToolbarHolderModifier);
+        this.nodes.toolbox.classList.add(this.CSS.toolboxOpened);
+        this.opened = true;
+        this.flipper.activate();
+
+        if (this.nodes.toolbox.getBoundingClientRect().top + this.nodes.toolbox.offsetHeight > window.innerHeight && this.nodes.toolbox.offsetHeight + 55 <= this.nodes.toolbox.getBoundingClientRect().top) {
+          this.nodes.toolbox.style.transform = "translate3D(0, ".concat(-this.nodes.toolbox.offsetHeight - 55, "px, 0)");
+        } else if (this.nodes.toolbox.getBoundingClientRect().top + this.nodes.toolbox.offsetHeight > window.innerHeight && this.nodes.toolbox.offsetHeight + 55 > this.nodes.toolbox.getBoundingClientRect().top) {
+          this.nodes.toolbox.style.maxHeight = '200px';
+
+          if (this.nodes.toolbox.getBoundingClientRect().top + this.nodes.toolbox.offsetHeight > window.innerHeight && this.nodes.toolbox.offsetHeight + 55 <= this.nodes.toolbox.getBoundingClientRect().top) {
+            this.nodes.toolbox.style.transform = "translate3D(0, ".concat(-this.nodes.toolbox.offsetHeight - 55, "px, 0)");
+          }
+        }
+      }
+      /**
+       * Close Toolbox
+       */
+
+    }, {
+      key: "close",
+      value: function close() {
+        this.nodes.toolbox.classList.remove(this.CSS.toolboxOpened);
+        this.Editor.UI.nodes.wrapper.classList.remove(this.CSS.openedToolbarHolderModifier);
+        this.opened = false;
+        this.flipper.deactivate();
+      }
+      /**
+       * Close Toolbox
+       */
+
+    }, {
+      key: "toggle",
+      value: function toggle() {
+        if (!this.opened) {
+          this.open();
+        } else {
+          this.close();
+        }
+      }
+      /**
+       * Iterates available tools and appends them to the Toolbox
+       */
+
+    }, {
+      key: "addTools",
+      value: function addTools() {
+        var _this2 = this;
+
+        var tools = this.Editor.Tools.blockTools;
+        Array.from(tools.values()).forEach(function (tool) {
+          return _this2.addTool(tool);
+        });
+      }
+      /**
+       * Append Tool to the Toolbox
+       *
+       * @param {BlockToolConstructable} tool - BlockTool object
+       */
+
+    }, {
+      key: "addTool",
+      value: function addTool(tool) {
+        var _this3 = this;
+
+        var toolToolboxSettings = tool.toolbox;
+        /**
+         * Skip tools that don't pass 'toolbox' property
+         */
+
+        if (!toolToolboxSettings) {
+          return;
+        }
+
+        if (toolToolboxSettings && !toolToolboxSettings.icon) {
+          _.log('Toolbar icon is missed. Tool %o skipped', 'warn', tool.name);
+
+          return;
+        }
+        /**
+         * @todo Add checkup for the render method
+         */
+        // if (typeof tool.render !== 'function') {
+        //   _.log('render method missed. Tool %o skipped', 'warn', tool);
+        //   return;
+        // }
+
+
+        var button = _dom["default"].make('li', [this.CSS.toolboxButton]);
+
+        var span = _dom["default"].make('span', [this.CSS.toolboxSpan]);
+
+        button.dataset.tool = tool.name;
+        button.innerHTML = toolToolboxSettings.icon;
+        span.innerHTML = _i18n["default"].t(_namespaceInternal.I18nInternalNS.toolNames, toolToolboxSettings.title || tool.name);
+        button.appendChild(span);
+
+        _dom["default"].append(this.nodes.toolbox, button);
+
+        this.nodes.toolbox.appendChild(button); // this.nodes.toolbox.appendChild(span);
+
+        this.nodes.buttons.push(button);
+        /**
+         * Add click listener
+         */
+
+        this.listeners.on(button, 'click', function (event) {
+          _this3.toolButtonActivate(event, tool.name);
+        });
+        /**
+         * Add listeners to show/hide toolbox tooltip
+         */
+        // const tooltipContent = this.drawTooltip(tool);
+        // this.tooltip.onHover(button, tooltipContent, {
+        //   placement: 'bottom',
+        //   hidingDelay: 200,
+        // });
+
+        var shortcut = tool.shortcut;
+
+        if (shortcut) {// this.enableShortcut(tool.name, shortcut);
+        }
+        /** Increment Tools count */
+
+
+        this.displayedToolsCount++;
+      }
+      /**
+       * Draw tooltip for toolbox tools
+       *
+       * @param tool - BlockTool object
+       * @returns {HTMLElement}
+       */
+      // private drawTooltip(tool: BlockTool): HTMLElement {
+      //   const toolboxSettings = tool.toolbox || {};
+      //   const name = I18n.t(I18nInternalNS.toolNames, toolboxSettings.title || tool.name);
+      //   let shortcut = tool.shortcut;
+      //
+      //   const tooltip = $.make('div', this.CSS.buttonTooltip);
+      //   const hint = document.createTextNode(_.capitalize(name));
+      //
+      //   tooltip.appendChild(hint);
+      //
+      //   if (shortcut) {
+      //     shortcut = _.beautifyShortcut(shortcut);
+      //
+      //     tooltip.appendChild($.make('div', this.CSS.buttonShortcut, {
+      //       textContent: shortcut,
+      //     }));
+      //   }
+      //
+      //   return tooltip;
+      // }
+
+      /**
+       * Enable shortcut Block Tool implemented shortcut
+       *
+       * @param {string} toolName - Tool name
+       * @param {string} shortcut - shortcut according to the ShortcutData Module format
+       */
+      // private enableShortcut(toolName: string, shortcut: string): void {
+      //   Shortcuts.add({
+      //     name: shortcut,
+      //     handler: (event: KeyboardEvent) => {
+      //       event.preventDefault();
+      //       this.insertNewBlock(toolName);
+      //     },
+      //     on: this.Editor.UI.nodes.redactor,
+      //   });
+      // }
+
+      /**
+       * Removes all added shortcuts
+       * Fired when the Read-Only mode is activated
+       */
+      // private removeAllShortcuts(): void {
+      //   const tools = this.Editor.Tools.blockTools;
+      //
+      //   Array
+      //     .from(tools.values())
+      //     .forEach((tool) => {
+      //       const shortcut = tool.shortcut;
+      //
+      //       if (shortcut) {
+      //         Shortcuts.remove(this.Editor.UI.nodes.redactor, shortcut);
+      //       }
+      //     });
+      // }
+
+      /**
+       * Creates Flipper instance to be able to leaf tools
+       */
+
+    }, {
+      key: "enableFlipper",
+      value: function enableFlipper() {
+        var tools = Array.from(this.nodes.toolbox.childNodes);
+        this.flipper = new _flipper["default"]({
+          items: tools,
+          focusedItemClass: this.CSS.toolboxButtonActive
+        });
+      }
+      /**
+       * Inserts new block
+       * Can be called when button clicked on Toolbox or by ShortcutData
+       *
+       * @param {string} toolName - Tool name
+       */
+
+    }, {
+      key: "insertNewBlock",
+      value: function insertNewBlock(toolName) {
+        var _this$Editor = this.Editor,
+            BlockManager = _this$Editor.BlockManager,
+            Caret = _this$Editor.Caret;
+        var newBlock = BlockManager.insert({
+          index: BlockManager.blocks.length + 1,
+          tool: toolName
+        });
+        /**
+         * Apply callback before inserting html
+         */
+
+        newBlock.call(_block.BlockToolAPI.APPEND_CALLBACK);
+        this.Editor.Caret.setToBlock(newBlock);
+        /** If new block doesn't contain inpus, insert new paragraph above */
+
+        if (newBlock.inputs.length === 0) {
+          if (newBlock === BlockManager.lastBlock) {
+            BlockManager.insertAtEnd();
+            Caret.setToBlock(BlockManager.lastBlock);
+          } else {
+            Caret.setToBlock(BlockManager.nextBlock);
+          }
+        }
+        /**
+         * close toolbar when node is changed
+         */
+
+
+        this.Editor.AddBox.close();
+      }
+    }]);
+    return AddBoxTools;
+  }(_module["default"]);
+
+  _exports["default"] = AddBoxTools;
+  AddBoxTools.displayName = "AddBoxTools";
+  module.exports = exports.default;
+});
 
 /***/ }),
 
@@ -18207,12 +19172,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
        * @param {KeyboardEvent} event - keydown
        */
       function keydown(event) {
+        var target = event.target;
         /**
          * Run common method for all keydown events
          */
+
         this.beforeKeydownProcessing(event);
 
-        if (event.target.parentElement.className.split(' ').indexOf('ce-block__content') == -1) {
+        if (target.parentElement.className.split(' ').indexOf('ce-block__content') == -1) {
           return;
         }
         /**
@@ -18510,6 +19477,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             Caret = _this$Editor4.Caret;
         var currentBlock = BlockManager.currentBlock;
         var tool = currentBlock.tool;
+        console.log(currentBlock);
         /**
          * Check if Block should be removed by current Backspace keydown
          */
@@ -19167,25 +20135,90 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             canBeEdited = _ref2$canBeEdited === void 0 ? false : _ref2$canBeEdited;
 
         var newIndex = index;
-        var prevIndex = index - 1;
-        var nextIndex = index + 1;
 
         if (newIndex === undefined) {
           newIndex = this.currentBlockIndex + (replace ? 0 : 1);
         }
 
         canBeRemoved = true;
-        canBeEdited = true;
-        this.config.disableRemoved.forEach(function (el) {
-          if (el === newIndex) {
-            canBeRemoved = false;
-          }
+        canBeEdited = true; // this.config.disableRemoved.forEach(el => {
+        //   if (el === newIndex) {
+        //     canBeRemoved = false
+        //   }
+        // })
+        //
+        // this.config.disableEdited.forEach(el => {
+        //   if (el === newIndex) {
+        //     canBeEdited = false
+        //   }
+        // })
+
+        var block = this.composeBlock({
+          id: id,
+          tool: tool,
+          data: data,
+          tunes: tunes,
+          canBeRemoved: canBeRemoved,
+          canBeEdited: canBeEdited
         });
-        this.config.disableEdited.forEach(function (el) {
-          if (el === newIndex) {
-            canBeEdited = false;
-          }
-        });
+
+        this._blocks.insert(newIndex, block, replace);
+        /**
+         * Force call of didMutated event on Block insertion
+         */
+
+
+        this.blockDidMutated(block);
+
+        if (needToFocus) {
+          this.currentBlockIndex = newIndex;
+        } else if (newIndex <= this.currentBlockIndex) {
+          this.currentBlockIndex++;
+        }
+
+        return block;
+      }
+    }, {
+      key: "insertToEnd",
+      value: function insertToEnd() {
+        var _ref3 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+            _ref3$id = _ref3.id,
+            id = _ref3$id === void 0 ? undefined : _ref3$id,
+            _ref3$tool = _ref3.tool,
+            tool = _ref3$tool === void 0 ? this.config.defaultBlock : _ref3$tool,
+            _ref3$data = _ref3.data,
+            data = _ref3$data === void 0 ? {} : _ref3$data,
+            index = _ref3.index,
+            _ref3$needToFocus = _ref3.needToFocus,
+            needToFocus = _ref3$needToFocus === void 0 ? true : _ref3$needToFocus,
+            _ref3$replace = _ref3.replace,
+            replace = _ref3$replace === void 0 ? false : _ref3$replace,
+            _ref3$tunes = _ref3.tunes,
+            tunes = _ref3$tunes === void 0 ? {} : _ref3$tunes,
+            _ref3$canBeRemoved = _ref3.canBeRemoved,
+            canBeRemoved = _ref3$canBeRemoved === void 0 ? false : _ref3$canBeRemoved,
+            _ref3$canBeEdited = _ref3.canBeEdited,
+            canBeEdited = _ref3$canBeEdited === void 0 ? false : _ref3$canBeEdited;
+
+        var newIndex = index;
+
+        if (newIndex === undefined) {
+          newIndex = this.currentBlockIndex + (replace ? 0 : 1);
+        }
+
+        canBeRemoved = true;
+        canBeEdited = true; // this.config.disableRemoved.forEach(el => {
+        //   if (el === newIndex) {
+        //     canBeRemoved = false
+        //   }
+        // })
+        //
+        // this.config.disableEdited.forEach(el => {
+        //   if (el === newIndex) {
+        //     canBeEdited = false
+        //   }
+        // })
+
         var block = this.composeBlock({
           id: id,
           tool: tool,
@@ -19223,11 +20256,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     }, {
       key: "replace",
-      value: function replace(_ref3) {
-        var _ref3$tool = _ref3.tool,
-            tool = _ref3$tool === void 0 ? this.config.defaultBlock : _ref3$tool,
-            _ref3$data = _ref3.data,
-            data = _ref3$data === void 0 ? {} : _ref3$data;
+      value: function replace(_ref4) {
+        var _ref4$tool = _ref4.tool,
+            tool = _ref4$tool === void 0 ? this.config.defaultBlock : _ref4$tool,
+            _ref4$data = _ref4.data,
+            data = _ref4$data === void 0 ? {} : _ref4$data;
         return this.insert({
           tool: tool,
           data: data,
@@ -19277,17 +20310,18 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       value: function insertDefaultBlockAtIndex(index) {
         var needToFocus = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
         var canBeRemoved = true;
-        var canBeEdited = true;
-        this.config.disableEdited.forEach(function (el) {
-          if (el === index + 1) {
-            canBeEdited = false;
-          }
-        });
-        this.config.disableRemoved.forEach(function (el) {
-          if (el === index + 1) {
-            canBeRemoved = false;
-          }
-        });
+        var canBeEdited = true; // this.config.disableEdited.forEach(el => {
+        //   if (el === index+1) {
+        //     canBeEdited = false
+        //   }
+        // })
+        //
+        // this.config.disableRemoved.forEach(el => {
+        //   if (el === index+1) {
+        //     canBeRemoved = false
+        //   }
+        // })
+
         var prevCanBeEdited = this._blocks[index - 1].canBeEdited;
         var prevCanBeRemoved = this._blocks[index - 1].canBeRemoved;
         var block = this.composeBlock({
@@ -24370,7 +25404,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return {
           time: +new Date(),
           blocks: blocks,
-          version: "0.0.26"
+          version: "0.0.27"
         };
       }
     }]);
@@ -27675,6 +28709,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           editorWrapper: 'codex-editor',
           editorWrapperNarrow: 'codex-editor--narrow',
           editorZone: 'codex-editor__redactor',
+          addZone: 'codex-editor__add',
           editorZoneHidden: 'codex-editor__redactor--hidden',
           editorLoader: 'codex-editor__loader',
           editorEmpty: 'codex-editor--empty',
@@ -27884,7 +28919,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         BlockSettings.close();
         InlineToolbar.close();
         ConversionToolbar.close();
-        Toolbox.close();
+        Toolbox.close(); // AddBoxTools.close();
       }
       /**
        * Check for mobile mode and cache a result
@@ -27907,13 +28942,15 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
          *
          * @type {Element}
          */
-        this.nodes.holder = _dom["default"].getHolder(this.config.holder);
+        this.nodes.holder = _dom["default"].getHolder(this.config.holder); // this.nodes.adder = $.getHolder(this.config.adder);
+
         /**
          * Create and save main UI elements
          */
 
         this.nodes.wrapper = _dom["default"].make('div', [this.CSS.editorWrapper].concat((0, _toConsumableArray2["default"])(this.isRtl ? [this.CSS.editorRtlFix] : [])));
         this.nodes.redactor = _dom["default"].make('div', this.CSS.editorZone);
+        this.nodes.adder = _dom["default"].make('div', this.CSS.addZone);
         /**
          * If Editor has injected into the narrow container, enable Narrow Mode
          */
@@ -27929,6 +28966,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.nodes.redactor.style.paddingBottom = this.config.minHeight + 'px';
         this.nodes.wrapper.appendChild(this.nodes.redactor);
         this.nodes.holder.appendChild(this.nodes.wrapper);
+        this.nodes.wrapper.appendChild(this.nodes.adder);
       }
       /**
        * Appends CSS
@@ -28414,11 +29452,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
            * Check isEmpty only for paragraphs to prevent unnecessary tree-walking on Tools with many nodes (for ex. Table)
            */
 
-          var isEmptyBlock = this.Editor.BlockManager.currentBlock.isEmpty;
+          var isEmptyBlock = this.Editor.BlockManager.currentBlock.isEmpty; // if (isEmptyBlock && currentBlock.canBeEdited) {
 
-          if (isEmptyBlock && currentBlock.canBeEdited) {
-            this.Editor.Toolbar.plusButton.show();
-          }
+          this.Editor.Toolbar.plusButton.show(); // }
         }
       }
       /**
@@ -30383,7 +31419,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       argsToPass.push(args);
     }
 
-    var editorLabelText = "Editor.js ".concat("0.0.26");
+    var editorLabelText = "Editor.js ".concat("0.0.27");
     var editorLabelStyle = "line-height: 1em;\n            color: #006FEA;\n            display: inline-block;\n            font-size: 11px;\n            line-height: 1em;\n            background-color: #fff;\n            padding: 4px 9px;\n            border-radius: 30px;\n            border: 1px solid rgba(56, 138, 229, 0.16);\n            margin: 4px 5px 4px 0;";
 
     if (labeled) {
@@ -31996,7 +33032,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".codex-editor{position:relative;-webkit-box-sizing:border-box;box-sizing:border-box;z-index:1}.codex-editor .hide,.codex-editor__redactor--hidden{display:none}.codex-editor__redactor [contenteditable]:empty:after{content:\"\\feff \"}@media (min-width:651px){.codex-editor--narrow.codex-editor--rtl .codex-editor__redactor{margin-left:50px;margin-right:0}}@media (min-width:651px){.codex-editor--narrow .ce-toolbar__actions{right:-5px}}.codex-editor__loader{position:relative;height:30vh}.codex-editor__loader:before{content:\"\";position:absolute;left:50%;top:50%;width:30px;height:30px;margin-top:-15px;margin-left:-15px;border-radius:50%;border:2px solid rgba(201,201,204,.48);border-top-color:transparent;-webkit-box-sizing:border-box;box-sizing:border-box;-webkit-animation:editor-loader-spin .8s linear infinite;animation:editor-loader-spin .8s linear infinite;will-change:transform}.codex-editor-copyable{position:absolute;height:1px;width:1px;top:-400%;opacity:.001}.codex-editor-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:999;pointer-events:none;overflow:hidden}.codex-editor-overlay__container{position:relative;pointer-events:auto;z-index:0}.codex-editor-overlay__rectangle{position:absolute;pointer-events:none;background-color:rgba(46,170,220,.2);border:1px solid transparent}.codex-editor svg{fill:currentColor;vertical-align:middle;max-height:100%;min-width:20px}::-moz-selection{background-color:#d4ecff}::selection{background-color:#d4ecff}.codex-editor--toolbox-opened [contentEditable=true][data-placeholder]:focus:before{opacity:0!important}@-webkit-keyframes editor-loader-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}to{-webkit-transform:rotate(1turn);transform:rotate(1turn)}}@keyframes editor-loader-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}to{-webkit-transform:rotate(1turn);transform:rotate(1turn)}}.ce-toolbar{position:absolute;left:0;right:0;top:0;width:100%;-webkit-transition:opacity .1s ease;transition:opacity .1s ease;will-change:opacity,transform;display:none}@media (max-width:650px){.ce-toolbar{position:absolute;background-color:#fff;border:1px solid #eaeaea;-webkit-box-shadow:0 3px 15px -3px rgba(13,20,33,.13);box-shadow:0 3px 15px -3px rgba(13,20,33,.13);border-radius:4px;z-index:2}}@media (max-width:650px) and (max-width:650px){.ce-toolbar{-webkit-box-shadow:0 13px 7px -5px rgba(26,38,49,.09),6px 15px 34px -6px rgba(33,48,73,.29);box-shadow:0 13px 7px -5px rgba(26,38,49,.09),6px 15px 34px -6px rgba(33,48,73,.29);border-bottom-color:#d5d7db}}@media (max-width:650px){.ce-toolbar--left-oriented:before{left:15px;margin-left:0}.ce-toolbar--right-oriented:before{left:auto;right:15px;margin-left:0}.ce-toolbar{padding:3px;margin-top:5px}}.ce-toolbar--opened{display:block}@media (max-width:650px){.ce-toolbar--opened{display:-webkit-box;display:-ms-flexbox;display:flex}}.ce-toolbar__content{max-width:650px;margin:0 auto;position:relative;width:100%}.ce-toolbar__plus{color:#707684;cursor:pointer;height:34px;display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center}.ce-toolbar__plus--active,.ce-toolbar__plus:hover{color:#388ae5}.ce-toolbar__plus--active{-webkit-animation:bounceIn .75s 1;animation:bounceIn .75s 1;-webkit-animation-fill-mode:forwards;animation-fill-mode:forwards}.ce-toolbar__plus{position:absolute;left:-34px;-ms-flex-negative:0;flex-shrink:0}.ce-toolbar__plus-shortcut{opacity:.6;word-spacing:-2px;margin-top:5px}.ce-toolbar__plus--hidden{display:none}@media (max-width:650px){.ce-toolbar__plus{display:-webkit-inline-box!important;display:-ms-inline-flexbox!important;display:inline-flex!important}}.ce-toolbar .ce-toolbox,.ce-toolbar__plus{top:50%;left:50%;-webkit-transform:translateY(-50%);transform:translateY(-50%);-webkit-transform:translateX(-50%);transform:translateX(-50%)}.ce-toolbar .ce-toolbox{margin-top:45px}.ce-toolbar__actions{position:absolute;right:-30px;top:5px;opacity:0}@media (max-width:650px){.ce-toolbar__actions{position:absolute;right:0;top:50%;-webkit-transform:translateY(-50%);transform:translateY(-50%);display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center}}.ce-toolbar__actions--opened{opacity:1}.ce-toolbar__actions-buttons{text-align:right}.ce-toolbar__settings-btn{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:18px;height:18px;color:#707684;cursor:pointer;background:#eff2f5;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.ce-toolbar__settings-btn:hover{color:#1d202b}@media (max-width:650px){.ce-toolbar__settings-btn{background:transparent}}.ce-toolbox{position:absolute;visibility:hidden;-webkit-transition:opacity .1s ease;transition:opacity .1s ease;will-change:opacity;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;padding:20px;background:#fff;-webkit-box-shadow:0 4px 20px rgba(0,0,0,.25);box-shadow:0 4px 20px rgba(0,0,0,.25);border-radius:5px}@media (max-width:480px){.ce-toolbox{overflow-x:auto;width:70%}}.ce-toolbox--opened{opacity:1;visibility:visible}.ce-toolbox__button{color:#707684;cursor:pointer;height:34px;display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center}.ce-toolbox__button--active,.ce-toolbox__button:hover{color:#388ae5}.ce-toolbox__button--active{-webkit-animation:bounceIn .75s 1;animation:bounceIn .75s 1;-webkit-animation-fill-mode:forwards;animation-fill-mode:forwards}.ce-toolbox__button{-ms-flex-negative:0;flex-shrink:0}.ce-toolbox__span{margin-left:10px}.ce-toolbox-button-tooltip__shortcut{opacity:.6;word-spacing:-3px;margin-top:3px}@media (min-width:651px){.codex-editor--narrow .ce-toolbox{background:#fff;z-index:2}}.ce-inline-toolbar{position:absolute;background-color:#fff;border:1px solid #eaeaea;-webkit-box-shadow:0 3px 15px -3px rgba(13,20,33,.13);box-shadow:0 3px 15px -3px rgba(13,20,33,.13);border-radius:4px;z-index:2}@media (max-width:650px){.ce-inline-toolbar{-webkit-box-shadow:0 13px 7px -5px rgba(26,38,49,.09),6px 15px 34px -6px rgba(33,48,73,.29);box-shadow:0 13px 7px -5px rgba(26,38,49,.09),6px 15px 34px -6px rgba(33,48,73,.29);border-bottom-color:#d5d7db}}.ce-inline-toolbar--left-oriented:before{left:15px;margin-left:0}.ce-inline-toolbar--right-oriented:before{left:auto;right:15px;margin-left:0}.ce-inline-toolbar{-webkit-transform:translateX(-50%) translateY(8px) scale(.9);transform:translateX(-50%) translateY(8px) scale(.9);opacity:0;visibility:hidden;-webkit-transition:opacity .25s ease,-webkit-transform .15s ease;transition:opacity .25s ease,-webkit-transform .15s ease;transition:transform .15s ease,opacity .25s ease;transition:transform .15s ease,opacity .25s ease,-webkit-transform .15s ease;will-change:transform,opacity;top:0;left:0;z-index:3}.ce-inline-toolbar--showed{opacity:1;visibility:visible;-webkit-transform:translateX(-50%);transform:translateX(-50%)}.ce-inline-toolbar--left-oriented{-webkit-transform:translateX(-23px) translateY(8px) scale(.9);transform:translateX(-23px) translateY(8px) scale(.9)}.ce-inline-toolbar--left-oriented.ce-inline-toolbar--showed{-webkit-transform:translateX(-23px);transform:translateX(-23px)}.ce-inline-toolbar--right-oriented{-webkit-transform:translateX(-100%) translateY(8px) scale(.9);transform:translateX(-100%) translateY(8px) scale(.9);margin-left:23px}.ce-inline-toolbar--right-oriented.ce-inline-toolbar--showed{-webkit-transform:translateX(-100%);transform:translateX(-100%)}.ce-inline-toolbar [hidden]{display:none!important}.ce-inline-toolbar__toggler-and-button-wrapper{width:100%;padding:0 6px}.ce-inline-toolbar__buttons,.ce-inline-toolbar__toggler-and-button-wrapper{display:-webkit-box;display:-ms-flexbox;display:flex}.ce-inline-toolbar__dropdown{display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;height:34px;padding:0 9px 0 10px;margin:0 6px 0 -6px;-webkit-box-align:center;-ms-flex-align:center;align-items:center;cursor:pointer;border-right:1px solid rgba(201,201,204,.48)}.ce-inline-toolbar__dropdown:hover{background:#eff2f5}.ce-inline-toolbar__dropdown--hidden{display:none}.ce-inline-toolbar__dropdown-content{display:-webkit-box;display:-ms-flexbox;display:flex;font-weight:500;font-size:14px}.ce-inline-toolbar__dropdown-content svg{height:12px}.ce-inline-toolbar__dropdown .icon--toggler-down{margin-left:4px}.ce-inline-toolbar__shortcut{opacity:.6;word-spacing:-3px;margin-top:3px}.ce-inline-tool{display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:34px;height:34px;line-height:34px;padding:0!important;text-align:center;border-radius:3px;cursor:pointer;border:0;outline:none;background-color:transparent;vertical-align:bottom;color:#000;margin:0}.ce-inline-tool:hover{background-color:#eff2f5}.ce-inline-tool--active{color:#388ae5}.ce-inline-tool--focused{-webkit-box-shadow:inset 0 0 0 1px rgba(7,161,227,.08);box-shadow:inset 0 0 0 1px rgba(7,161,227,.08);background:rgba(34,186,255,.08)!important}.ce-inline-tool--focused-animated{-webkit-animation-name:buttonClicked;animation-name:buttonClicked;-webkit-animation-duration:.25s;animation-duration:.25s}.ce-inline-tool{border-radius:0;line-height:normal;width:auto;padding:0 5px!important;min-width:24px}.ce-inline-tool:not(:last-of-type){margin-right:2px}.ce-inline-tool .icon{height:12px}.ce-inline-tool--link .icon--unlink,.ce-inline-tool--unlink .icon--link{display:none}.ce-inline-tool--unlink .icon--unlink{display:inline-block;margin-bottom:-1px}.ce-inline-tool-input{outline:none;border:0;border-radius:0 0 4px 4px;margin:0;font-size:13px;padding:10px;width:100%;-webkit-box-sizing:border-box;box-sizing:border-box;display:none;font-weight:500;border-top:1px solid rgba(201,201,204,.48)}.ce-inline-tool-input::-webkit-input-placeholder{color:#707684}.ce-inline-tool-input::-moz-placeholder{color:#707684}.ce-inline-tool-input:-ms-input-placeholder{color:#707684}.ce-inline-tool-input::-ms-input-placeholder{color:#707684}.ce-inline-tool-input::placeholder{color:#707684}.ce-inline-tool-input--showed{display:block}.ce-conversion-toolbar{position:absolute;background-color:#fff;border:1px solid #eaeaea;-webkit-box-shadow:0 3px 15px -3px rgba(13,20,33,.13);box-shadow:0 3px 15px -3px rgba(13,20,33,.13);border-radius:4px;z-index:2}@media (max-width:650px){.ce-conversion-toolbar{-webkit-box-shadow:0 13px 7px -5px rgba(26,38,49,.09),6px 15px 34px -6px rgba(33,48,73,.29);box-shadow:0 13px 7px -5px rgba(26,38,49,.09),6px 15px 34px -6px rgba(33,48,73,.29);border-bottom-color:#d5d7db}}.ce-conversion-toolbar--left-oriented:before{left:15px;margin-left:0}.ce-conversion-toolbar--right-oriented:before{left:auto;right:15px;margin-left:0}.ce-conversion-toolbar{opacity:0;visibility:hidden;will-change:transform,opacity;-webkit-transition:opacity .1s ease,-webkit-transform .1s ease;transition:opacity .1s ease,-webkit-transform .1s ease;transition:transform .1s ease,opacity .1s ease;transition:transform .1s ease,opacity .1s ease,-webkit-transform .1s ease;-webkit-transform:translateY(-8px);transform:translateY(-8px);left:-1px;width:150px;margin-top:5px;-webkit-box-sizing:content-box;box-sizing:content-box}.ce-conversion-toolbar--showed{opacity:1;visibility:visible;-webkit-transform:none;transform:none}.ce-conversion-toolbar [hidden]{display:none!important}.ce-conversion-toolbar__buttons{display:-webkit-box;display:-ms-flexbox;display:flex}.ce-conversion-toolbar__label{color:#707684;font-size:11px;font-weight:500;letter-spacing:.33px;padding:10px 10px 5px;text-transform:uppercase}.ce-conversion-tool{display:-webkit-box;display:-ms-flexbox;display:flex;padding:5px 10px;font-size:14px;line-height:20px;font-weight:500;cursor:pointer;-webkit-box-align:center;-ms-flex-align:center;align-items:center}.ce-conversion-tool--hidden{display:none}.ce-conversion-tool--focused{-webkit-box-shadow:inset 0 0 0 1px rgba(7,161,227,.08);box-shadow:inset 0 0 0 1px rgba(7,161,227,.08);background:rgba(34,186,255,.08)!important}.ce-conversion-tool--focused-animated{-webkit-animation-name:buttonClicked;animation-name:buttonClicked;-webkit-animation-duration:.25s;animation-duration:.25s}.ce-conversion-tool:hover{background:#eff2f5}.ce-conversion-tool__icon{display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;width:20px;height:20px;border:1px solid rgba(201,201,204,.48);border-radius:3px;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;margin-right:10px;background:#fff}.ce-conversion-tool__icon svg{width:11px;height:11px}.ce-conversion-tool--last{margin-right:0!important}.ce-conversion-tool--active{color:#388ae5!important;-webkit-animation:bounceIn .75s 1;animation:bounceIn .75s 1;-webkit-animation-fill-mode:forwards;animation-fill-mode:forwards}.ce-settings{position:absolute;background-color:#fff;border:1px solid #eaeaea;-webkit-box-shadow:0 3px 15px -3px rgba(13,20,33,.13);box-shadow:0 3px 15px -3px rgba(13,20,33,.13);border-radius:4px;z-index:2}@media (max-width:650px){.ce-settings{-webkit-box-shadow:0 13px 7px -5px rgba(26,38,49,.09),6px 15px 34px -6px rgba(33,48,73,.29);box-shadow:0 13px 7px -5px rgba(26,38,49,.09),6px 15px 34px -6px rgba(33,48,73,.29);border-bottom-color:#d5d7db}}.ce-settings--left-oriented:before{left:15px;margin-left:0}.ce-settings--right-oriented:before{left:auto;right:15px;margin-left:0}.ce-settings{right:-1px;top:30px;min-width:114px;-webkit-box-sizing:content-box;box-sizing:content-box}@media (max-width:650px){.ce-settings{bottom:40px;right:-11px;top:auto}}.ce-settings:before{left:auto;right:12px}@media (max-width:650px){.ce-settings:before{bottom:-5px;top:auto}}.ce-settings{display:none}.ce-settings--opened{display:block;-webkit-animation-duration:.1s;animation-duration:.1s;-webkit-animation-name:panelShowing;animation-name:panelShowing}.ce-settings__plugin-zone:not(:empty){padding:3px 3px 0}.ce-settings__default-zone:not(:empty){padding:3px}.ce-settings__button{display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:34px;height:34px;line-height:34px;padding:0!important;text-align:center;border-radius:3px;cursor:pointer;border:0;outline:none;background-color:transparent;vertical-align:bottom;color:#000;margin:0}.ce-settings__button:hover{background-color:#eff2f5}.ce-settings__button--active{color:#388ae5}.ce-settings__button--focused{-webkit-box-shadow:inset 0 0 0 1px rgba(7,161,227,.08);box-shadow:inset 0 0 0 1px rgba(7,161,227,.08);background:rgba(34,186,255,.08)!important}.ce-settings__button--focused-animated{-webkit-animation-name:buttonClicked;animation-name:buttonClicked;-webkit-animation-duration:.25s;animation-duration:.25s}.ce-settings__button:not(:nth-child(3n+3)){margin-right:3px}.ce-settings__button:nth-child(n+4){margin-top:3px}.ce-settings__button{line-height:32px}.ce-settings__button--disabled{cursor:not-allowed!important;opacity:.3}.ce-settings__button--selected{color:#388ae5}.ce-settings__button--delete{-webkit-transition:background-color .3s ease;transition:background-color .3s ease;will-change:background-color}.ce-settings__button--delete .icon{-webkit-transition:-webkit-transform .2s ease-out;transition:-webkit-transform .2s ease-out;transition:transform .2s ease-out;transition:transform .2s ease-out,-webkit-transform .2s ease-out;will-change:transform}.ce-settings__button--confirm{background-color:#e24a4a!important;color:#fff}.ce-settings__button--confirm:hover{background-color:#d54a4a!important}.ce-settings__button--confirm .icon{-webkit-transform:rotate(90deg);transform:rotate(90deg)}.ce-block{margin-top:10px}.ce-block:first-of-type{margin-top:0}.ce-block--selected .ce-block__content{background:#e1f2ff}.ce-block--selected .ce-block__content [contenteditable]{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.ce-block--selected .ce-block__content .ce-stub,.ce-block--selected .ce-block__content img{opacity:.55}.ce-block--stretched .ce-block__content{max-width:none}.ce-block__content{position:relative;max-width:650px;margin:0 auto;-webkit-transition:background-color .15s ease;transition:background-color .15s ease;display:-webkit-box;display:-ms-flexbox;display:flex}.ce-block__content>:nth-child(2){width:100%}.ce-block__content--dnd{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;margin-right:10px;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.ce-block__content--remove{position:absolute;right:0;top:0;bottom:0;margin:auto;cursor:pointer}.ce-block--drop-target .ce-block__content:after{content:\"\";position:absolute;top:100%;height:1px;width:100%;color:#388ae5;background:repeating-linear-gradient(90deg,#388ae5,#388ae5 1px,#fff 0,#fff 6px)}.ce-block a{cursor:pointer;text-decoration:underline}.ce-block b{font-weight:700}.ce-block i{font-style:italic}.wobble{-webkit-animation-name:wobble;animation-name:wobble;-webkit-animation-duration:.4s;animation-duration:.4s}@-webkit-keyframes wobble{0%{-webkit-transform:translateZ(0);transform:translateZ(0)}15%{-webkit-transform:translate3d(-5%,0,0) rotate(-5deg);transform:translate3d(-5%,0,0) rotate(-5deg)}30%{-webkit-transform:translate3d(2%,0,0) rotate(3deg);transform:translate3d(2%,0,0) rotate(3deg)}45%{-webkit-transform:translate3d(-3%,0,0) rotate(-3deg);transform:translate3d(-3%,0,0) rotate(-3deg)}60%{-webkit-transform:translate3d(2%,0,0) rotate(2deg);transform:translate3d(2%,0,0) rotate(2deg)}75%{-webkit-transform:translate3d(-1%,0,0) rotate(-1deg);transform:translate3d(-1%,0,0) rotate(-1deg)}to{-webkit-transform:translateZ(0);transform:translateZ(0)}}@keyframes wobble{0%{-webkit-transform:translateZ(0);transform:translateZ(0)}15%{-webkit-transform:translate3d(-5%,0,0) rotate(-5deg);transform:translate3d(-5%,0,0) rotate(-5deg)}30%{-webkit-transform:translate3d(2%,0,0) rotate(3deg);transform:translate3d(2%,0,0) rotate(3deg)}45%{-webkit-transform:translate3d(-3%,0,0) rotate(-3deg);transform:translate3d(-3%,0,0) rotate(-3deg)}60%{-webkit-transform:translate3d(2%,0,0) rotate(2deg);transform:translate3d(2%,0,0) rotate(2deg)}75%{-webkit-transform:translate3d(-1%,0,0) rotate(-1deg);transform:translate3d(-1%,0,0) rotate(-1deg)}to{-webkit-transform:translateZ(0);transform:translateZ(0)}}@-webkit-keyframes bounceIn{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}0%{-webkit-transform:scale3d(.9,.9,.9);transform:scale3d(.9,.9,.9)}20%{-webkit-transform:scale3d(1.03,1.03,1.03);transform:scale3d(1.03,1.03,1.03)}60%{-webkit-transform:scaleX(1);transform:scaleX(1)}}@keyframes bounceIn{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}0%{-webkit-transform:scale3d(.9,.9,.9);transform:scale3d(.9,.9,.9)}20%{-webkit-transform:scale3d(1.03,1.03,1.03);transform:scale3d(1.03,1.03,1.03)}60%{-webkit-transform:scaleX(1);transform:scaleX(1)}}@-webkit-keyframes selectionBounce{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}50%{-webkit-transform:scale3d(1.01,1.01,1.01);transform:scale3d(1.01,1.01,1.01)}70%{-webkit-transform:scaleX(1);transform:scaleX(1)}}@keyframes selectionBounce{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}50%{-webkit-transform:scale3d(1.01,1.01,1.01);transform:scale3d(1.01,1.01,1.01)}70%{-webkit-transform:scaleX(1);transform:scaleX(1)}}@-webkit-keyframes buttonClicked{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}0%{-webkit-transform:scale3d(.95,.95,.95);transform:scale3d(.95,.95,.95)}60%{-webkit-transform:scale3d(1.02,1.02,1.02);transform:scale3d(1.02,1.02,1.02)}80%{-webkit-transform:scaleX(1);transform:scaleX(1)}}@keyframes buttonClicked{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}0%{-webkit-transform:scale3d(.95,.95,.95);transform:scale3d(.95,.95,.95)}60%{-webkit-transform:scale3d(1.02,1.02,1.02);transform:scale3d(1.02,1.02,1.02)}80%{-webkit-transform:scaleX(1);transform:scaleX(1)}}@-webkit-keyframes panelShowing{0%{opacity:0;-webkit-transform:translateY(-8px) scale(.9);transform:translateY(-8px) scale(.9)}70%{opacity:1;-webkit-transform:translateY(2px);transform:translateY(2px)}to{-webkit-transform:translateY(0);transform:translateY(0)}}@keyframes panelShowing{0%{opacity:0;-webkit-transform:translateY(-8px) scale(.9);transform:translateY(-8px) scale(.9)}70%{opacity:1;-webkit-transform:translateY(2px);transform:translateY(2px)}to{-webkit-transform:translateY(0);transform:translateY(0)}}.cdx-block{padding:.4em 0}.cdx-input{border:1px solid rgba(201,201,204,.48);-webkit-box-shadow:inset 0 1px 2px 0 rgba(35,44,72,.06);box-shadow:inset 0 1px 2px 0 rgba(35,44,72,.06);border-radius:3px;padding:10px 12px;outline:none;width:100%;-webkit-box-sizing:border-box;box-sizing:border-box}.cdx-input[data-placeholder]:before{position:static!important;display:inline-block;width:0;white-space:nowrap;pointer-events:none}.cdx-settings-button{display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:34px;height:34px;line-height:34px;padding:0!important;text-align:center;border-radius:3px;cursor:pointer;border:0;outline:none;background-color:transparent;vertical-align:bottom;color:#000;margin:0}.cdx-settings-button:hover{background-color:#eff2f5}.cdx-settings-button--focused{-webkit-box-shadow:inset 0 0 0 1px rgba(7,161,227,.08);box-shadow:inset 0 0 0 1px rgba(7,161,227,.08);background:rgba(34,186,255,.08)!important}.cdx-settings-button--focused-animated{-webkit-animation-name:buttonClicked;animation-name:buttonClicked;-webkit-animation-duration:.25s;animation-duration:.25s}.cdx-settings-button:not(:nth-child(3n+3)){margin-right:3px}.cdx-settings-button:nth-child(n+4){margin-top:3px}.cdx-settings-button--active{color:#388ae5}.cdx-loader{position:relative;border:1px solid rgba(201,201,204,.48)}.cdx-loader:before{content:\"\";position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-11px 0 0 -11px;border:2px solid rgba(201,201,204,.48);border-left-color:#388ae5;border-radius:50%;-webkit-animation:cdxRotation 1.2s linear infinite;animation:cdxRotation 1.2s linear infinite}@-webkit-keyframes cdxRotation{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}to{-webkit-transform:rotate(1turn);transform:rotate(1turn)}}@keyframes cdxRotation{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}to{-webkit-transform:rotate(1turn);transform:rotate(1turn)}}.cdx-button{padding:13px;border-radius:3px;border:1px solid rgba(201,201,204,.48);font-size:14.9px;background:#fff;-webkit-box-shadow:0 2px 2px 0 rgba(18,30,57,.04);box-shadow:0 2px 2px 0 rgba(18,30,57,.04);color:#707684;text-align:center;cursor:pointer}.cdx-button:hover{background:#fbfcfe;-webkit-box-shadow:0 1px 3px 0 rgba(18,30,57,.08);box-shadow:0 1px 3px 0 rgba(18,30,57,.08)}.cdx-button svg{height:20px;margin-right:.2em;margin-top:-2px}.ce-stub{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:100%;padding:3.5em 0;margin:17px 0;border-radius:3px;background:#fcf7f7;color:#b46262}.ce-stub__info{margin-left:20px}.ce-stub__title{margin-bottom:3px;font-weight:600;font-size:18px;text-transform:capitalize}.ce-stub__subtitle{font-size:16px}.codex-editor.codex-editor--rtl{direction:rtl}.codex-editor.codex-editor--rtl .cdx-list{padding-left:0;padding-right:40px}.codex-editor.codex-editor--rtl .ce-toolbar__plus{right:-34px;left:auto}.codex-editor.codex-editor--rtl .ce-toolbar__actions{right:auto;left:-34px}@media (max-width:650px){.codex-editor.codex-editor--rtl .ce-toolbar__actions{margin-left:0;margin-right:auto;padding-right:0;padding-left:10px}}.codex-editor.codex-editor--rtl .ce-settings{left:5px;right:auto}.codex-editor.codex-editor--rtl .ce-settings:before{right:auto;left:25px}.codex-editor.codex-editor--rtl .ce-settings__button:not(:nth-child(3n+3)){margin-left:3px;margin-right:0}.codex-editor.codex-editor--rtl .ce-conversion-tool__icon{margin-right:0;margin-left:10px}.codex-editor.codex-editor--rtl .ce-inline-toolbar__dropdown{border-right:0 solid transparent;border-left:1px solid rgba(201,201,204,.48);margin:0 -6px 0 6px}.codex-editor.codex-editor--rtl .ce-inline-toolbar__dropdown .icon--toggler-down{margin-left:0;margin-right:4px}@media (min-width:651px){.codex-editor--narrow.codex-editor--rtl .ce-toolbar__plus{left:0;right:5px}}@media (min-width:651px){.codex-editor--narrow.codex-editor--rtl .ce-toolbar__actions{left:-5px}}"
+module.exports = ".codex-editor{position:relative;-webkit-box-sizing:border-box;box-sizing:border-box;z-index:1}.codex-editor .hide,.codex-editor__redactor--hidden{display:none}.codex-editor__redactor [contenteditable]:empty:after{content:\"\\feff \"}@media (min-width:651px){.codex-editor--narrow.codex-editor--rtl .codex-editor__redactor{margin-left:50px;margin-right:0}}@media (min-width:651px){.codex-editor--narrow .ce-toolbar__actions{right:-5px}}.codex-editor__loader{position:relative;height:30vh}.codex-editor__loader:before{content:\"\";position:absolute;left:50%;top:50%;width:30px;height:30px;margin-top:-15px;margin-left:-15px;border-radius:50%;border:2px solid rgba(201,201,204,.48);border-top-color:transparent;-webkit-box-sizing:border-box;box-sizing:border-box;-webkit-animation:editor-loader-spin .8s linear infinite;animation:editor-loader-spin .8s linear infinite;will-change:transform}.codex-editor-copyable{position:absolute;height:1px;width:1px;top:-400%;opacity:.001}.codex-editor-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:999;pointer-events:none;overflow:hidden}.codex-editor-overlay__container{position:relative;pointer-events:auto;z-index:0}.codex-editor-overlay__rectangle{position:absolute;pointer-events:none;background-color:rgba(46,170,220,.2);border:1px solid transparent}.codex-editor svg{fill:currentColor;vertical-align:middle;max-height:100%;min-width:20px}::-moz-selection{background-color:#d4ecff}::selection{background-color:#d4ecff}.codex-editor--toolbox-opened [contentEditable=true][data-placeholder]:focus:before{opacity:0!important}@-webkit-keyframes editor-loader-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}to{-webkit-transform:rotate(1turn);transform:rotate(1turn)}}@keyframes editor-loader-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}to{-webkit-transform:rotate(1turn);transform:rotate(1turn)}}.ce-toolbar{position:absolute;left:0;right:0;top:0;width:100%;-webkit-transition:opacity .1s ease;transition:opacity .1s ease;will-change:opacity,transform;display:none}@media (max-width:650px){.ce-toolbar{position:absolute;background-color:#fff;border:1px solid #eaeaea;-webkit-box-shadow:0 3px 15px -3px rgba(13,20,33,.13);box-shadow:0 3px 15px -3px rgba(13,20,33,.13);border-radius:4px;z-index:2}}@media (max-width:650px) and (max-width:650px){.ce-toolbar{-webkit-box-shadow:0 13px 7px -5px rgba(26,38,49,.09),6px 15px 34px -6px rgba(33,48,73,.29);box-shadow:0 13px 7px -5px rgba(26,38,49,.09),6px 15px 34px -6px rgba(33,48,73,.29);border-bottom-color:#d5d7db}}@media (max-width:650px){.ce-toolbar--left-oriented:before{left:15px;margin-left:0}.ce-toolbar--right-oriented:before{left:auto;right:15px;margin-left:0}.ce-toolbar{padding:3px;margin-top:5px}}.ce-toolbar--opened{display:block}@media (max-width:650px){.ce-toolbar--opened{display:-webkit-box;display:-ms-flexbox;display:flex}}.ce-toolbar__content{max-width:650px;margin:0 auto;position:relative;width:100%}.ce-toolbar__plus{color:#707684;cursor:pointer;height:34px;display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center}.ce-toolbar__plus--active,.ce-toolbar__plus:hover{color:#388ae5}.ce-toolbar__plus--active{-webkit-animation:bounceIn .75s 1;animation:bounceIn .75s 1;-webkit-animation-fill-mode:forwards;animation-fill-mode:forwards}.ce-toolbar__plus{position:absolute;left:-34px;-ms-flex-negative:0;flex-shrink:0}.ce-toolbar__plus-shortcut{opacity:.6;word-spacing:-2px;margin-top:5px}.ce-toolbar__plus--hidden{display:none}@media (max-width:650px){.ce-toolbar__plus{display:-webkit-inline-box!important;display:-ms-inline-flexbox!important;display:inline-flex!important}}.ce-toolbar .ce-toolbox,.ce-toolbar .ce-toolbox__add,.ce-toolbar__plus{top:50%;left:50%;-webkit-transform:translateY(-50%);transform:translateY(-50%);-webkit-transform:translateX(-50%);transform:translateX(-50%)}.ce-toolbar .ce-toolbox{margin-top:45px}.ce-toolbar__actions{position:absolute;right:-30px;top:5px;opacity:0}@media (max-width:650px){.ce-toolbar__actions{position:absolute;right:0;top:50%;-webkit-transform:translateY(-50%);transform:translateY(-50%);display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center}}.ce-toolbar__actions--opened{opacity:1}.ce-toolbar__actions-buttons{text-align:right}.ce-toolbar__settings-btn{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:18px;height:18px;color:#707684;cursor:pointer;background:#eff2f5;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.ce-toolbar__settings-btn:hover{color:#1d202b}@media (max-width:650px){.ce-toolbar__settings-btn{background:transparent}}.ce-toolbox-add{display:none}.ce-toolbox-add--opened{display:block}.codex-editor__add{margin-left:auto;position:absolute;width:100%;bottom:250px}.ce-adder__content{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center}.ce-adder__content div{cursor:pointer}.ce-toolbox-add{margin-top:45px}.ce-toolbox,.ce-toolbox-add{position:absolute;visibility:hidden;-webkit-transition:opacity .1s ease;transition:opacity .1s ease;will-change:opacity;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;padding:20px;background:#fff;-webkit-box-shadow:0 4px 20px rgba(0,0,0,.25);box-shadow:0 4px 20px rgba(0,0,0,.25);border-radius:5px}@media (max-width:480px){.ce-toolbox,.ce-toolbox-add{overflow-x:auto;width:70%}}.ce-toolbox--opened,.ce-toolbox-add--opened{opacity:1;visibility:visible}.ce-toolbox-add__button,.ce-toolbox__button{color:#707684;cursor:pointer;height:34px;display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center}.ce-toolbox-add__button--active,.ce-toolbox-add__button:hover,.ce-toolbox__button--active,.ce-toolbox__button:hover{color:#388ae5}.ce-toolbox-add__button--active,.ce-toolbox__button--active{-webkit-animation:bounceIn .75s 1;animation:bounceIn .75s 1;-webkit-animation-fill-mode:forwards;animation-fill-mode:forwards}.ce-toolbox-add__button,.ce-toolbox__button{-ms-flex-negative:0;flex-shrink:0}.ce-toolbox-add__span,.ce-toolbox__span{margin-left:10px}.ce-toolbox-button-tooltip__shortcut{opacity:.6;word-spacing:-3px;margin-top:3px}@media (min-width:651px){.codex-editor--narrow .ce-toolbox{background:#fff;z-index:2}}.ce-inline-toolbar{position:absolute;background-color:#fff;border:1px solid #eaeaea;-webkit-box-shadow:0 3px 15px -3px rgba(13,20,33,.13);box-shadow:0 3px 15px -3px rgba(13,20,33,.13);border-radius:4px;z-index:2}@media (max-width:650px){.ce-inline-toolbar{-webkit-box-shadow:0 13px 7px -5px rgba(26,38,49,.09),6px 15px 34px -6px rgba(33,48,73,.29);box-shadow:0 13px 7px -5px rgba(26,38,49,.09),6px 15px 34px -6px rgba(33,48,73,.29);border-bottom-color:#d5d7db}}.ce-inline-toolbar--left-oriented:before{left:15px;margin-left:0}.ce-inline-toolbar--right-oriented:before{left:auto;right:15px;margin-left:0}.ce-inline-toolbar{-webkit-transform:translateX(-50%) translateY(8px) scale(.9);transform:translateX(-50%) translateY(8px) scale(.9);opacity:0;visibility:hidden;-webkit-transition:opacity .25s ease,-webkit-transform .15s ease;transition:opacity .25s ease,-webkit-transform .15s ease;transition:transform .15s ease,opacity .25s ease;transition:transform .15s ease,opacity .25s ease,-webkit-transform .15s ease;will-change:transform,opacity;top:0;left:0;z-index:3}.ce-inline-toolbar--showed{opacity:1;visibility:visible;-webkit-transform:translateX(-50%);transform:translateX(-50%)}.ce-inline-toolbar--left-oriented{-webkit-transform:translateX(-23px) translateY(8px) scale(.9);transform:translateX(-23px) translateY(8px) scale(.9)}.ce-inline-toolbar--left-oriented.ce-inline-toolbar--showed{-webkit-transform:translateX(-23px);transform:translateX(-23px)}.ce-inline-toolbar--right-oriented{-webkit-transform:translateX(-100%) translateY(8px) scale(.9);transform:translateX(-100%) translateY(8px) scale(.9);margin-left:23px}.ce-inline-toolbar--right-oriented.ce-inline-toolbar--showed{-webkit-transform:translateX(-100%);transform:translateX(-100%)}.ce-inline-toolbar [hidden]{display:none!important}.ce-inline-toolbar__toggler-and-button-wrapper{width:100%;padding:0 6px}.ce-inline-toolbar__buttons,.ce-inline-toolbar__toggler-and-button-wrapper{display:-webkit-box;display:-ms-flexbox;display:flex}.ce-inline-toolbar__dropdown{display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;height:34px;padding:0 9px 0 10px;margin:0 6px 0 -6px;-webkit-box-align:center;-ms-flex-align:center;align-items:center;cursor:pointer;border-right:1px solid rgba(201,201,204,.48)}.ce-inline-toolbar__dropdown:hover{background:#eff2f5}.ce-inline-toolbar__dropdown--hidden{display:none}.ce-inline-toolbar__dropdown-content{display:-webkit-box;display:-ms-flexbox;display:flex;font-weight:500;font-size:14px}.ce-inline-toolbar__dropdown-content svg{height:12px}.ce-inline-toolbar__dropdown .icon--toggler-down{margin-left:4px}.ce-inline-toolbar__shortcut{opacity:.6;word-spacing:-3px;margin-top:3px}.ce-inline-tool{display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:34px;height:34px;line-height:34px;padding:0!important;text-align:center;border-radius:3px;cursor:pointer;border:0;outline:none;background-color:transparent;vertical-align:bottom;color:#000;margin:0}.ce-inline-tool:hover{background-color:#eff2f5}.ce-inline-tool--active{color:#388ae5}.ce-inline-tool--focused{-webkit-box-shadow:inset 0 0 0 1px rgba(7,161,227,.08);box-shadow:inset 0 0 0 1px rgba(7,161,227,.08);background:rgba(34,186,255,.08)!important}.ce-inline-tool--focused-animated{-webkit-animation-name:buttonClicked;animation-name:buttonClicked;-webkit-animation-duration:.25s;animation-duration:.25s}.ce-inline-tool{border-radius:0;line-height:normal;width:auto;padding:0 5px!important;min-width:24px}.ce-inline-tool:not(:last-of-type){margin-right:2px}.ce-inline-tool .icon{height:12px}.ce-inline-tool--link .icon--unlink,.ce-inline-tool--unlink .icon--link{display:none}.ce-inline-tool--unlink .icon--unlink{display:inline-block;margin-bottom:-1px}.ce-inline-tool-input{outline:none;border:0;border-radius:0 0 4px 4px;margin:0;font-size:13px;padding:10px;width:100%;-webkit-box-sizing:border-box;box-sizing:border-box;display:none;font-weight:500;border-top:1px solid rgba(201,201,204,.48)}.ce-inline-tool-input::-webkit-input-placeholder{color:#707684}.ce-inline-tool-input::-moz-placeholder{color:#707684}.ce-inline-tool-input:-ms-input-placeholder{color:#707684}.ce-inline-tool-input::-ms-input-placeholder{color:#707684}.ce-inline-tool-input::placeholder{color:#707684}.ce-inline-tool-input--showed{display:block}.ce-conversion-toolbar{position:absolute;background-color:#fff;border:1px solid #eaeaea;-webkit-box-shadow:0 3px 15px -3px rgba(13,20,33,.13);box-shadow:0 3px 15px -3px rgba(13,20,33,.13);border-radius:4px;z-index:2}@media (max-width:650px){.ce-conversion-toolbar{-webkit-box-shadow:0 13px 7px -5px rgba(26,38,49,.09),6px 15px 34px -6px rgba(33,48,73,.29);box-shadow:0 13px 7px -5px rgba(26,38,49,.09),6px 15px 34px -6px rgba(33,48,73,.29);border-bottom-color:#d5d7db}}.ce-conversion-toolbar--left-oriented:before{left:15px;margin-left:0}.ce-conversion-toolbar--right-oriented:before{left:auto;right:15px;margin-left:0}.ce-conversion-toolbar{opacity:0;visibility:hidden;will-change:transform,opacity;-webkit-transition:opacity .1s ease,-webkit-transform .1s ease;transition:opacity .1s ease,-webkit-transform .1s ease;transition:transform .1s ease,opacity .1s ease;transition:transform .1s ease,opacity .1s ease,-webkit-transform .1s ease;-webkit-transform:translateY(-8px);transform:translateY(-8px);left:-1px;width:150px;margin-top:5px;-webkit-box-sizing:content-box;box-sizing:content-box}.ce-conversion-toolbar--showed{opacity:1;visibility:visible;-webkit-transform:none;transform:none}.ce-conversion-toolbar [hidden]{display:none!important}.ce-conversion-toolbar__buttons{display:-webkit-box;display:-ms-flexbox;display:flex}.ce-conversion-toolbar__label{color:#707684;font-size:11px;font-weight:500;letter-spacing:.33px;padding:10px 10px 5px;text-transform:uppercase}.ce-conversion-tool{display:-webkit-box;display:-ms-flexbox;display:flex;padding:5px 10px;font-size:14px;line-height:20px;font-weight:500;cursor:pointer;-webkit-box-align:center;-ms-flex-align:center;align-items:center}.ce-conversion-tool--hidden{display:none}.ce-conversion-tool--focused{-webkit-box-shadow:inset 0 0 0 1px rgba(7,161,227,.08);box-shadow:inset 0 0 0 1px rgba(7,161,227,.08);background:rgba(34,186,255,.08)!important}.ce-conversion-tool--focused-animated{-webkit-animation-name:buttonClicked;animation-name:buttonClicked;-webkit-animation-duration:.25s;animation-duration:.25s}.ce-conversion-tool:hover{background:#eff2f5}.ce-conversion-tool__icon{display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;width:20px;height:20px;border:1px solid rgba(201,201,204,.48);border-radius:3px;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;margin-right:10px;background:#fff}.ce-conversion-tool__icon svg{width:11px;height:11px}.ce-conversion-tool--last{margin-right:0!important}.ce-conversion-tool--active{color:#388ae5!important;-webkit-animation:bounceIn .75s 1;animation:bounceIn .75s 1;-webkit-animation-fill-mode:forwards;animation-fill-mode:forwards}.ce-settings{position:absolute;background-color:#fff;border:1px solid #eaeaea;-webkit-box-shadow:0 3px 15px -3px rgba(13,20,33,.13);box-shadow:0 3px 15px -3px rgba(13,20,33,.13);border-radius:4px;z-index:2}@media (max-width:650px){.ce-settings{-webkit-box-shadow:0 13px 7px -5px rgba(26,38,49,.09),6px 15px 34px -6px rgba(33,48,73,.29);box-shadow:0 13px 7px -5px rgba(26,38,49,.09),6px 15px 34px -6px rgba(33,48,73,.29);border-bottom-color:#d5d7db}}.ce-settings--left-oriented:before{left:15px;margin-left:0}.ce-settings--right-oriented:before{left:auto;right:15px;margin-left:0}.ce-settings{right:-1px;top:30px;min-width:114px;-webkit-box-sizing:content-box;box-sizing:content-box}@media (max-width:650px){.ce-settings{bottom:40px;right:-11px;top:auto}}.ce-settings:before{left:auto;right:12px}@media (max-width:650px){.ce-settings:before{bottom:-5px;top:auto}}.ce-settings{display:none}.ce-settings--opened{display:block;-webkit-animation-duration:.1s;animation-duration:.1s;-webkit-animation-name:panelShowing;animation-name:panelShowing}.ce-settings__plugin-zone:not(:empty){padding:3px 3px 0}.ce-settings__default-zone:not(:empty){padding:3px}.ce-settings__button{display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:34px;height:34px;line-height:34px;padding:0!important;text-align:center;border-radius:3px;cursor:pointer;border:0;outline:none;background-color:transparent;vertical-align:bottom;color:#000;margin:0}.ce-settings__button:hover{background-color:#eff2f5}.ce-settings__button--active{color:#388ae5}.ce-settings__button--focused{-webkit-box-shadow:inset 0 0 0 1px rgba(7,161,227,.08);box-shadow:inset 0 0 0 1px rgba(7,161,227,.08);background:rgba(34,186,255,.08)!important}.ce-settings__button--focused-animated{-webkit-animation-name:buttonClicked;animation-name:buttonClicked;-webkit-animation-duration:.25s;animation-duration:.25s}.ce-settings__button:not(:nth-child(3n+3)){margin-right:3px}.ce-settings__button:nth-child(n+4){margin-top:3px}.ce-settings__button{line-height:32px}.ce-settings__button--disabled{cursor:not-allowed!important;opacity:.3}.ce-settings__button--selected{color:#388ae5}.ce-settings__button--delete{-webkit-transition:background-color .3s ease;transition:background-color .3s ease;will-change:background-color}.ce-settings__button--delete .icon{-webkit-transition:-webkit-transform .2s ease-out;transition:-webkit-transform .2s ease-out;transition:transform .2s ease-out;transition:transform .2s ease-out,-webkit-transform .2s ease-out;will-change:transform}.ce-settings__button--confirm{background-color:#e24a4a!important;color:#fff}.ce-settings__button--confirm:hover{background-color:#d54a4a!important}.ce-settings__button--confirm .icon{-webkit-transform:rotate(90deg);transform:rotate(90deg)}.ce-block{margin-top:10px}.ce-block:first-of-type{margin-top:0}.ce-block--selected .ce-block__content{background:#e1f2ff}.ce-block--selected .ce-block__content [contenteditable]{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.ce-block--selected .ce-block__content .ce-stub,.ce-block--selected .ce-block__content img{opacity:.55}.ce-block--stretched .ce-block__content{max-width:none}.ce-block__content{position:relative;max-width:650px;margin:0 auto;-webkit-transition:background-color .15s ease;transition:background-color .15s ease}.ce-block__add,.ce-block__content{display:-webkit-box;display:-ms-flexbox;display:flex}.ce-block__add{-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;min-height:10px;max-height:10px;-webkit-box-align:center;-ms-flex-align:center;align-items:center}.ce-block__add svg{display:none;height:40px;width:40px}.ce-block__add:hover svg{display:block;height:40px;width:40px}.ce-block__content>:nth-child(2){width:100%}.ce-block__content--dnd{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;margin-right:10px;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.ce-block__content--remove{position:absolute;right:0;top:0;bottom:0;margin:auto;cursor:pointer}.ce-block--drop-target .ce-block__content:after{content:\"\";position:absolute;top:100%;height:1px;width:100%;color:#388ae5;background:repeating-linear-gradient(90deg,#388ae5,#388ae5 1px,#fff 0,#fff 6px)}.ce-block a{cursor:pointer;text-decoration:underline}.ce-block b{font-weight:700}.ce-block i{font-style:italic}.wobble{-webkit-animation-name:wobble;animation-name:wobble;-webkit-animation-duration:.4s;animation-duration:.4s}@-webkit-keyframes wobble{0%{-webkit-transform:translateZ(0);transform:translateZ(0)}15%{-webkit-transform:translate3d(-5%,0,0) rotate(-5deg);transform:translate3d(-5%,0,0) rotate(-5deg)}30%{-webkit-transform:translate3d(2%,0,0) rotate(3deg);transform:translate3d(2%,0,0) rotate(3deg)}45%{-webkit-transform:translate3d(-3%,0,0) rotate(-3deg);transform:translate3d(-3%,0,0) rotate(-3deg)}60%{-webkit-transform:translate3d(2%,0,0) rotate(2deg);transform:translate3d(2%,0,0) rotate(2deg)}75%{-webkit-transform:translate3d(-1%,0,0) rotate(-1deg);transform:translate3d(-1%,0,0) rotate(-1deg)}to{-webkit-transform:translateZ(0);transform:translateZ(0)}}@keyframes wobble{0%{-webkit-transform:translateZ(0);transform:translateZ(0)}15%{-webkit-transform:translate3d(-5%,0,0) rotate(-5deg);transform:translate3d(-5%,0,0) rotate(-5deg)}30%{-webkit-transform:translate3d(2%,0,0) rotate(3deg);transform:translate3d(2%,0,0) rotate(3deg)}45%{-webkit-transform:translate3d(-3%,0,0) rotate(-3deg);transform:translate3d(-3%,0,0) rotate(-3deg)}60%{-webkit-transform:translate3d(2%,0,0) rotate(2deg);transform:translate3d(2%,0,0) rotate(2deg)}75%{-webkit-transform:translate3d(-1%,0,0) rotate(-1deg);transform:translate3d(-1%,0,0) rotate(-1deg)}to{-webkit-transform:translateZ(0);transform:translateZ(0)}}@-webkit-keyframes bounceIn{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}0%{-webkit-transform:scale3d(.9,.9,.9);transform:scale3d(.9,.9,.9)}20%{-webkit-transform:scale3d(1.03,1.03,1.03);transform:scale3d(1.03,1.03,1.03)}60%{-webkit-transform:scaleX(1);transform:scaleX(1)}}@keyframes bounceIn{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}0%{-webkit-transform:scale3d(.9,.9,.9);transform:scale3d(.9,.9,.9)}20%{-webkit-transform:scale3d(1.03,1.03,1.03);transform:scale3d(1.03,1.03,1.03)}60%{-webkit-transform:scaleX(1);transform:scaleX(1)}}@-webkit-keyframes selectionBounce{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}50%{-webkit-transform:scale3d(1.01,1.01,1.01);transform:scale3d(1.01,1.01,1.01)}70%{-webkit-transform:scaleX(1);transform:scaleX(1)}}@keyframes selectionBounce{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}50%{-webkit-transform:scale3d(1.01,1.01,1.01);transform:scale3d(1.01,1.01,1.01)}70%{-webkit-transform:scaleX(1);transform:scaleX(1)}}@-webkit-keyframes buttonClicked{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}0%{-webkit-transform:scale3d(.95,.95,.95);transform:scale3d(.95,.95,.95)}60%{-webkit-transform:scale3d(1.02,1.02,1.02);transform:scale3d(1.02,1.02,1.02)}80%{-webkit-transform:scaleX(1);transform:scaleX(1)}}@keyframes buttonClicked{0%,20%,40%,60%,80%,to{-webkit-animation-timing-function:cubic-bezier(.215,.61,.355,1);animation-timing-function:cubic-bezier(.215,.61,.355,1)}0%{-webkit-transform:scale3d(.95,.95,.95);transform:scale3d(.95,.95,.95)}60%{-webkit-transform:scale3d(1.02,1.02,1.02);transform:scale3d(1.02,1.02,1.02)}80%{-webkit-transform:scaleX(1);transform:scaleX(1)}}@-webkit-keyframes panelShowing{0%{opacity:0;-webkit-transform:translateY(-8px) scale(.9);transform:translateY(-8px) scale(.9)}70%{opacity:1;-webkit-transform:translateY(2px);transform:translateY(2px)}to{-webkit-transform:translateY(0);transform:translateY(0)}}@keyframes panelShowing{0%{opacity:0;-webkit-transform:translateY(-8px) scale(.9);transform:translateY(-8px) scale(.9)}70%{opacity:1;-webkit-transform:translateY(2px);transform:translateY(2px)}to{-webkit-transform:translateY(0);transform:translateY(0)}}.cdx-block{padding:.4em 0}.cdx-input{border:1px solid rgba(201,201,204,.48);-webkit-box-shadow:inset 0 1px 2px 0 rgba(35,44,72,.06);box-shadow:inset 0 1px 2px 0 rgba(35,44,72,.06);border-radius:3px;padding:10px 12px;outline:none;width:100%;-webkit-box-sizing:border-box;box-sizing:border-box}.cdx-input[data-placeholder]:before{position:static!important;display:inline-block;width:0;white-space:nowrap;pointer-events:none}.cdx-settings-button{display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:34px;height:34px;line-height:34px;padding:0!important;text-align:center;border-radius:3px;cursor:pointer;border:0;outline:none;background-color:transparent;vertical-align:bottom;color:#000;margin:0}.cdx-settings-button:hover{background-color:#eff2f5}.cdx-settings-button--focused{-webkit-box-shadow:inset 0 0 0 1px rgba(7,161,227,.08);box-shadow:inset 0 0 0 1px rgba(7,161,227,.08);background:rgba(34,186,255,.08)!important}.cdx-settings-button--focused-animated{-webkit-animation-name:buttonClicked;animation-name:buttonClicked;-webkit-animation-duration:.25s;animation-duration:.25s}.cdx-settings-button:not(:nth-child(3n+3)){margin-right:3px}.cdx-settings-button:nth-child(n+4){margin-top:3px}.cdx-settings-button--active{color:#388ae5}.cdx-loader{position:relative;border:1px solid rgba(201,201,204,.48)}.cdx-loader:before{content:\"\";position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-11px 0 0 -11px;border:2px solid rgba(201,201,204,.48);border-left-color:#388ae5;border-radius:50%;-webkit-animation:cdxRotation 1.2s linear infinite;animation:cdxRotation 1.2s linear infinite}@-webkit-keyframes cdxRotation{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}to{-webkit-transform:rotate(1turn);transform:rotate(1turn)}}@keyframes cdxRotation{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}to{-webkit-transform:rotate(1turn);transform:rotate(1turn)}}.cdx-button{padding:13px;border-radius:3px;border:1px solid rgba(201,201,204,.48);font-size:14.9px;background:#fff;-webkit-box-shadow:0 2px 2px 0 rgba(18,30,57,.04);box-shadow:0 2px 2px 0 rgba(18,30,57,.04);color:#707684;text-align:center;cursor:pointer}.cdx-button:hover{background:#fbfcfe;-webkit-box-shadow:0 1px 3px 0 rgba(18,30,57,.08);box-shadow:0 1px 3px 0 rgba(18,30,57,.08)}.cdx-button svg{height:20px;margin-right:.2em;margin-top:-2px}.ce-stub{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:100%;padding:3.5em 0;margin:17px 0;border-radius:3px;background:#fcf7f7;color:#b46262}.ce-stub__info{margin-left:20px}.ce-stub__title{margin-bottom:3px;font-weight:600;font-size:18px;text-transform:capitalize}.ce-stub__subtitle{font-size:16px}.codex-editor.codex-editor--rtl{direction:rtl}.codex-editor.codex-editor--rtl .cdx-list{padding-left:0;padding-right:40px}.codex-editor.codex-editor--rtl .ce-toolbar__plus{right:-34px;left:auto}.codex-editor.codex-editor--rtl .ce-toolbar__actions{right:auto;left:-34px}@media (max-width:650px){.codex-editor.codex-editor--rtl .ce-toolbar__actions{margin-left:0;margin-right:auto;padding-right:0;padding-left:10px}}.codex-editor.codex-editor--rtl .ce-settings{left:5px;right:auto}.codex-editor.codex-editor--rtl .ce-settings:before{right:auto;left:25px}.codex-editor.codex-editor--rtl .ce-settings__button:not(:nth-child(3n+3)){margin-left:3px;margin-right:0}.codex-editor.codex-editor--rtl .ce-conversion-tool__icon{margin-right:0;margin-left:10px}.codex-editor.codex-editor--rtl .ce-inline-toolbar__dropdown{border-right:0 solid transparent;border-left:1px solid rgba(201,201,204,.48);margin:0 -6px 0 6px}.codex-editor.codex-editor--rtl .ce-inline-toolbar__dropdown .icon--toggler-down{margin-left:0;margin-right:4px}@media (min-width:651px){.codex-editor--narrow.codex-editor--rtl .ce-toolbar__plus{left:0;right:5px}}@media (min-width:651px){.codex-editor--narrow.codex-editor--rtl .ce-toolbar__actions{left:-5px}}"
 
 /***/ }),
 

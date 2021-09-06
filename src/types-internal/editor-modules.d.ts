@@ -1,6 +1,8 @@
 import UI from '../components/modules/ui';
 import BlockEvents from '../components/modules/blockEvents';
 import Toolbar from '../components/modules/toolbar/index';
+import AddBox from '../components/modules/add/index';
+import AddBoxTools from '../components/modules/add/toolbox';
 import InlineToolbar from '../components/modules/toolbar/inline';
 import Toolbox from '../components/modules/toolbar/toolbox';
 import BlockSettings from '../components/modules/toolbar/blockSettings';
@@ -41,6 +43,8 @@ export interface EditorModules {
   Toolbar: Toolbar;
   InlineToolbar: InlineToolbar;
   Toolbox: Toolbox;
+  AddBox: AddBox;
+  AddBoxTools: AddBoxTools;
   BlockSettings: BlockSettings;
   ConversionToolbar: ConversionToolbar;
   Paste: Paste;

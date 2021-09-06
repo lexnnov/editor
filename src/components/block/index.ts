@@ -105,6 +105,7 @@ export default class Block extends EventsDispatcher<BlockEvents> {
       wrapper: 'ce-block',
       wrapperStretched: 'ce-block--stretched',
       content: 'ce-block__content',
+      add: 'ce-block__add',
       dnd: 'ce-block__content--dnd',
       remove: 'ce-block__content--remove',
       focused: 'ce-block--focused',
@@ -738,14 +739,18 @@ export default class Block extends EventsDispatcher<BlockEvents> {
    * @returns {HTMLDivElement}
    */
   private compose(): HTMLDivElement {
+    // alert('11')
     const wrapper = $.make('div', Block.CSS.wrapper) as HTMLDivElement,
       contentNode = $.make('div', Block.CSS.content),
+      add = $.make('div', Block.CSS.add),
       pluginsContent = this.toolInstance.render();
 
     const dnd = $.make('div', Block.CSS.dnd)
     const remove = $.make('div', Block.CSS.remove)
     const svg = $.svg('drag', 13, 13)
+    const svg1 = $.svg('plus', 13, 13)
     dnd.appendChild(svg)
+    add.appendChild(svg1)
     dnd.setAttribute('draggable', 'true')
 
 
@@ -788,6 +793,7 @@ export default class Block extends EventsDispatcher<BlockEvents> {
       });
 
     wrapper.appendChild(wrappedContentNode);
+    wrapper.appendChild(add);
 
     return wrapper;
   }

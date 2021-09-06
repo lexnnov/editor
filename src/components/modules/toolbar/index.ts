@@ -107,7 +107,6 @@ export default class Toolbar extends Module<ToolbarNodes> {
       content: 'ce-toolbar__content',
       actions: 'ce-toolbar__actions',
       actionsOpened: 'ce-toolbar__actions--opened',
-
       toolbarOpened: 'ce-toolbar--opened',
 
       // Content Zone
@@ -281,6 +280,7 @@ export default class Toolbar extends Module<ToolbarNodes> {
      */
     $.append(this.nodes.wrapper, this.nodes.content);
     $.append(this.nodes.content, this.nodes.actions);
+
 
     /**
      * Fill Content Zone:

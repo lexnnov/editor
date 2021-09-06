@@ -33,6 +33,26 @@
     display: flex;
    }
 
+  &__add {
+    display: flex;
+    justify-content: center;
+    min-height: 10px;
+    max-height: 10px;
+  align-items: center;
+   }
+
+  &__add svg {
+     display: none;
+     height: 40px;
+     width: 40px;
+   }
+
+  &__add:hover svg {
+    display: block;
+    height: 40px;
+    width: 40px;
+   }
+
   &__content > *:nth-child(2) {
    width: 100%;
   }
