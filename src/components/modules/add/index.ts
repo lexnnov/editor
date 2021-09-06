@@ -293,7 +293,7 @@ export default class AddBox extends Module<AddBoxNodes> {
      *  - Toolbox
      */
     this.nodes.plusButton = $.make('div', this.CSS.plusButton);
-    $.append(this.nodes.plusButton, $.svg('plus', 40, 40));
+    $.append(this.nodes.plusButton, $.svg('bottom_plus', 40, 40));
     $.append(this.nodes.content, this.nodes.plusButton);
 
     this.readOnlyMutableListeners.on(this.nodes.plusButton, 'click', () => {

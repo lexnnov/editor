@@ -748,7 +748,8 @@ export default class Block extends EventsDispatcher<BlockEvents> {
     const dnd = $.make('div', Block.CSS.dnd)
     const remove = $.make('div', Block.CSS.remove)
     const svg = $.svg('drag', 13, 13)
-    const svg1 = $.svg('plus', 13, 13)
+    const svg1 = $.svg('intermediate_plus', 13, 13)
+
     dnd.appendChild(svg)
     add.appendChild(svg1)
     dnd.setAttribute('draggable', 'true')

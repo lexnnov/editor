@@ -744,9 +744,9 @@ export default class UI extends Module<UINodes> {
        */
       const isEmptyBlock = this.Editor.BlockManager.currentBlock.isEmpty;
 
-      // if (isEmptyBlock && currentBlock.canBeEdited) {
+      if (isEmptyBlock && currentBlock.canBeEdited) {
         this.Editor.Toolbar.plusButton.show();
-      // }
+      }
     }
   }
 

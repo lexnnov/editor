@@ -1,3 +1,19 @@
+
+.icon--intermediate_plus {
+  color:#E6E6E6;
+}
+.icon--intermediate_plus:hover {
+  color: #F66C00;
+}
+
+.icon--bottom_plus {
+  color: #E6E6E6;
+}
+
+.icon--bottom_plus:hover {
+  color: #F66C00;
+}
+
 .ce-block {
   margin-top: 10px;
   &:first-of-type {
@@ -31,27 +47,29 @@
     margin: 0 auto;
     transition: background-color 150ms ease;
     display: flex;
-   }
+  }
 
   &__add {
     display: flex;
     justify-content: center;
     min-height: 10px;
     max-height: 10px;
-  align-items: center;
-   }
+    align-items: center;
+  }
 
   &__add svg {
-     display: none;
-     height: 40px;
-     width: 40px;
+    height: 40px;
+    width: 40px;
+    z-index: 1;
+    cursor: pointer;
+    display: none;
    }
 
   &__add:hover svg {
     display: block;
     height: 40px;
     width: 40px;
-   }
+  }
 
   &__content > *:nth-child(2) {
    width: 100%;
