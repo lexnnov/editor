@@ -374,7 +374,7 @@ export default class AddBoxTools extends Module<ToolboxNodes> {
     /** If new block doesn't contain inpus, insert new paragraph above */
     if (newBlock.inputs.length === 0) {
       if (newBlock === BlockManager.lastBlock) {
-        BlockManager.insertAtEnd();
+        // BlockManager.insertAtEnd();
         Caret.setToBlock(BlockManager.lastBlock);
       } else {
         Caret.setToBlock(BlockManager.nextBlock);

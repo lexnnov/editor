@@ -1,7 +1,7 @@
 /*!
  * Editor.js
  * 
- * @version 0.0.28
+ * @version 0.0.29
  * 
  * @licence Apache-2.0
  * @author CodeX <https://codex.so>
@@ -11225,7 +11225,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }], [{
       key: "version",
       get: function get() {
-        return "0.0.28";
+        return "0.0.29";
       }
     }]);
     return EditorJS;
@@ -17100,7 +17100,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (newBlock.inputs.length === 0) {
           if (newBlock === BlockManager.lastBlock) {
-            BlockManager.insertAtEnd();
+            // BlockManager.insertAtEnd();
             Caret.setToBlock(BlockManager.lastBlock);
           } else {
             Caret.setToBlock(BlockManager.nextBlock);
@@ -25403,7 +25403,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return {
           time: +new Date(),
           blocks: blocks,
-          version: "0.0.28"
+          version: "0.0.29"
         };
       }
     }]);
@@ -31418,7 +31418,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       argsToPass.push(args);
     }
 
-    var editorLabelText = "Editor.js ".concat("0.0.28");
+    var editorLabelText = "Editor.js ".concat("0.0.29");
     var editorLabelStyle = "line-height: 1em;\n            color: #006FEA;\n            display: inline-block;\n            font-size: 11px;\n            line-height: 1em;\n            background-color: #fff;\n            padding: 4px 9px;\n            border-radius: 30px;\n            border: 1px solid rgba(56, 138, 229, 0.16);\n            margin: 4px 5px 4px 0;";
 
     if (labeled) {
