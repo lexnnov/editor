@@ -14,12 +14,16 @@
 
   }
 }
-
-.ce-toolbox-add {
+.ce-toolbox-add1 {
+  top: 0;
+  z-index: 2;
+  position: relative;
+}
+.ce-toolbox-add, .ce-toolbox-add1 {
   margin-top: 45px;
 }
 
-.ce-toolbox, .ce-toolbox-add {
+.ce-toolbox, .ce-toolbox-add, .ce-toolbox-add1 {
   position: absolute;
   visibility: hidden;
   transition: opacity 100ms ease;

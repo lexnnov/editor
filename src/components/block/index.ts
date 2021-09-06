@@ -19,11 +19,14 @@ import BlockTune from '../tools/tune';
 import {BlockTuneData} from '../../../types/block-tunes/block-tune-data';
 import ToolsCollection from '../tools/collection';
 import EventsDispatcher from '../utils/events';
+import I18n from '../i18n';
+import {I18nInternalNS} from '../i18n/namespace-internal';
 
 /**
  * Interface describes Block class constructor argument
  */
 interface BlockConstructorOptions {
+
   /**
    * Block's id. Should be passed for existed block, and omitted for a new one.
    */
@@ -70,6 +73,8 @@ interface BlockConstructorOptions {
  * Available Block Tool API methods
  */
 export enum BlockToolAPI {
+
+
   /**
    * @todo remove method in 3.0.0
    * @deprecated — use 'rendered' hook instead
@@ -100,8 +105,19 @@ export default class Block extends EventsDispatcher<BlockEvents> {
    *
    * @returns {{wrapper: string, content: string}}
    */
+  public nodes = {
+    toolbox: null,
+    buttons: [],
+  }
+
+  private displayedToolsCount = 0;
   public static get CSS(): { [name: string]: string } {
     return {
+      toolbox: 'ce-toolbox-add1',
+      toolboxOpened: 'ce-toolbox-add1--opened',
+
+      toolboxButton: 'ce-toolbox-add1__button',
+      toolboxSpan: 'ce-toolbox-add1__span',
       wrapper: 'ce-block',
       wrapperStretched: 'ce-block--stretched',
       content: 'ce-block__content',
@@ -141,7 +157,7 @@ export default class Block extends EventsDispatcher<BlockEvents> {
 
   public canBeRemoved: boolean;
   public canBeEdited: boolean;
-
+  public opened = false;
   /**
    * Tunes used by Tool
    */
@@ -738,8 +754,50 @@ export default class Block extends EventsDispatcher<BlockEvents> {
    *
    * @returns {HTMLDivElement}
    */
+  public toggle(): void {
+    if (!this.opened) {
+      this.open();
+    } else {
+      this.close();
+    }
+  }
+
+  public open(): void {
+    this.nodes.toolbox.style.removeProperty('transform');
+    this.nodes.toolbox.style.removeProperty('max-height');
+    this.api.Editor.UI.nodes.wrapper.classList.add(Block.CSS.openedToolbarHolderModifier);
+    this.nodes.toolbox.classList.add(Block.CSS.toolboxOpened);
+    this.opened = true;
+    // this.flipper.activate();
+
+
+    if (this.nodes.toolbox.getBoundingClientRect().top + this.nodes.toolbox.offsetHeight > window.innerHeight &&
+      this.nodes.toolbox.offsetHeight + 55 <= this.nodes.toolbox.getBoundingClientRect().top) {
+      this.nodes.toolbox.style.transform = `translate3D(0, ${-this.nodes.toolbox.offsetHeight - 55}px, 0)`;
+    } else if ((this.nodes.toolbox.getBoundingClientRect().top + this.nodes.toolbox.offsetHeight > window.innerHeight &&
+      this.nodes.toolbox.offsetHeight + 55 > this.nodes.toolbox.getBoundingClientRect().top)) {
+      this.nodes.toolbox.style.maxHeight = '200px'
+
+      if (this.nodes.toolbox.getBoundingClientRect().top + this.nodes.toolbox.offsetHeight > window.innerHeight &&
+        this.nodes.toolbox.offsetHeight + 55 <= this.nodes.toolbox.getBoundingClientRect().top) {
+        this.nodes.toolbox.style.transform = `translate3D(0, ${-this.nodes.toolbox.offsetHeight - 55}px, 0)`;
+      }
+    }
+  }
+
+  /**
+   * Close Toolbox
+   */
+  public close(): void {
+    this.nodes.toolbox.classList.remove(Block.CSS.toolboxOpened);
+    this.api.Editor.UI.nodes.wrapper.classList.remove(Block.CSS.openedToolbarHolderModifier);
+
+    this.opened = false;
+    // this.flipper.deactivate();
+  }
+
+
   private compose(): HTMLDivElement {
-    // alert('11')
     const wrapper = $.make('div', Block.CSS.wrapper) as HTMLDivElement,
       contentNode = $.make('div', Block.CSS.content),
       add = $.make('div', Block.CSS.add),
@@ -754,12 +812,19 @@ export default class Block extends EventsDispatcher<BlockEvents> {
     add.appendChild(svg1)
     dnd.setAttribute('draggable', 'true')
 
+    this.nodes.toolbox = $.make('div', Block.CSS.toolbox);
 
+    add.appendChild(this.nodes.toolbox)
+    this.addTools()
     // console.log(canBeRemoved)
 
     contentNode.appendChild(dnd);
     contentNode.appendChild(pluginsContent);
 
+    svg1.addEventListener('click', ()=> {
+
+      this.toggle()
+    })
 
     if(this.canBeRemoved) {
       contentNode.appendChild(remove);
@@ -797,6 +862,124 @@ export default class Block extends EventsDispatcher<BlockEvents> {
     wrapper.appendChild(add);
 
     return wrapper;
+  }
+
+  private addTools(): void {
+    const tools = this.api.Editor.Tools.blockTools;
+
+    Array
+      .from(tools.values())
+      .forEach((tool) => this.addTool(tool));
+  }
+
+  /**
+   * Append Tool to the Toolbox
+   *
+   * @param {BlockToolConstructable} tool - BlockTool object
+   */
+  private addTool(tool: BlockTool): void {
+    const toolToolboxSettings = tool.toolbox;
+
+    /**
+     * Skip tools that don't pass 'toolbox' property
+     */
+    if (!toolToolboxSettings) {
+      return;
+    }
+
+    if (toolToolboxSettings && !toolToolboxSettings.icon) {
+      _.log('Toolbar icon is missed. Tool %o skipped', 'warn', tool.name);
+
+      return;
+    }
+
+    /**
+     * @todo Add checkup for the render method
+     */
+      // if (typeof tool.render !== 'function') {
+      //   _.log('render method missed. Tool %o skipped', 'warn', tool);
+      //   return;
+      // }
+
+    const button = $.make('li', [Block.CSS.toolboxButton]);
+    const span = $.make('span', [Block.CSS.toolboxSpan]);
+
+    button.dataset.tool = tool.name;
+    button.innerHTML = toolToolboxSettings.icon;
+    span.innerHTML = I18n.t(I18nInternalNS.toolNames, toolToolboxSettings.title || tool.name);
+
+    button.appendChild(span)
+
+    console.log(span)
+
+    $.append(this.nodes.toolbox, button);
+
+    this.nodes.toolbox.appendChild(button);
+    // this.nodes.toolbox.appendChild(span);
+    this.nodes.buttons.push(button);
+
+    /**
+     * Add click listener
+     */
+    this.api.listeners.on(button, 'click', (event: KeyboardEvent | MouseEvent) => {
+      // console.log('11')
+      this.toolButtonActivate(event, tool.name);
+    });
+
+    /**
+     * Add listeners to show/hide toolbox tooltip
+     */
+      // const tooltipContent = this.drawTooltip(tool);
+
+      // this.tooltip.onHover(button, tooltipContent, {
+      //   placement: 'bottom',
+      //   hidingDelay: 200,
+      // });
+
+    const shortcut = tool.shortcut;
+
+    if (shortcut) {
+      // this.enableShortcut(tool.name, shortcut);
+    }
+
+    /** Increment Tools count */
+    this.displayedToolsCount++;
+  }
+
+  public toolButtonActivate(event: MouseEvent | KeyboardEvent, toolName: string): void {
+    this.insertNewBlock(toolName);
+  }
+
+  private insertNewBlock(toolName: string): void {
+    const { BlockManager, Caret } = this.api.Editor;
+    const { currentBlock } = BlockManager;
+
+    const newBlock = BlockManager.insert({
+      tool: toolName,
+      replace: currentBlock.isEmpty,
+    });
+
+    /**
+     * Apply callback before inserting html
+     */
+    newBlock.call(BlockToolAPI.APPEND_CALLBACK);
+
+    this.api.Editor.Caret.setToBlock(newBlock);
+
+    /** If new block doesn't contain inpus, insert new paragraph above */
+    if (newBlock.inputs.length === 0) {
+      if (newBlock === BlockManager.lastBlock) {
+        BlockManager.insertAtEnd();
+        Caret.setToBlock(BlockManager.lastBlock);
+      } else {
+        Caret.setToBlock(BlockManager.nextBlock);
+      }
+    }
+
+    /**
+     * close toolbar when node is changed
+     */
+    this.close();
   }
 
   /**

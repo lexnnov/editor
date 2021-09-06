@@ -131,10 +131,9 @@
   }
 }
 
-.ce-toolbox-add {
+.ce-toolbox-add, .ce-toolbox-add1 {
   display: none;
 &--opened {
    display: block;
-
  }
 }

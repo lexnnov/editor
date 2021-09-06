@@ -31,7 +31,7 @@ export default class Module<T extends ModuleNodes = {}> {
    *
    * @type {EditorModules}
    */
-  protected Editor: EditorModules;
+  public Editor: EditorModules;
 
   /**
    * Editor configuration object
@@ -48,7 +48,7 @@ export default class Module<T extends ModuleNodes = {}> {
   /**
    * Util for bind/unbind DOM event listeners
    */
-  protected listeners: Listeners = new Listeners();
+  public listeners: Listeners = new Listeners();
 
   /**
    * This object provides methods to push into set of listeners that being dropped when read-only mode is enabled
