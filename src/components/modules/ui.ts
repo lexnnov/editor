@@ -55,7 +55,7 @@ export default class UI extends Module<UINodes> {
    */
   public get CSS(): {
     editorWrapper: string; editorWrapperNarrow: string; editorZone: string; addZone: string; editorZoneHidden: string;
-    editorLoader: string; editorEmpty: string; editorRtlFix: string;
+    editorLoader: string; editorEmpty: string; editorRtlFix: string; editorLoading: string
     } {
     return {
       editorWrapper: 'codex-editor',
@@ -66,6 +66,7 @@ export default class UI extends Module<UINodes> {
       editorLoader: 'codex-editor__loader',
       editorEmpty: 'codex-editor--empty',
       editorRtlFix: 'codex-editor--rtl',
+      editorLoading: 'codex-editor--loading',
     };
   }
 
@@ -128,6 +129,7 @@ export default class UI extends Module<UINodes> {
     this.nodes.loader = $.make('div', this.CSS.editorLoader);
     this.nodes.wrapper.prepend(this.nodes.loader);
     this.nodes.redactor.classList.add(this.CSS.editorZoneHidden);
+    this.nodes.holder.classList.add(this.CSS.editorLoading);
   }
 
   /**
@@ -136,6 +138,7 @@ export default class UI extends Module<UINodes> {
   public removeLoader(): void {
     this.nodes.loader.remove();
     this.nodes.redactor.classList.remove(this.CSS.editorZoneHidden);
+    this.nodes.holder.classList.remove(this.CSS.editorLoading);
   }
 
   /**

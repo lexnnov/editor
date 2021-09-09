@@ -219,8 +219,6 @@ export default class BlockEvents extends Module {
   private enter(event: KeyboardEvent): void {
     const {BlockManager, UI} = this.Editor;
     const currentBlock = BlockManager.currentBlock;
-    const currentBlock1 = BlockManager.nextBlock;
-    const qwer = currentBlock.id === BlockManager.blocks[0].id
 
 
     /**
@@ -250,7 +248,6 @@ export default class BlockEvents extends Module {
     /**
      * If enter has been pressed at the start of the text, just insert paragraph Block above
      */
-    if (!qwer) {
       if (this.Editor.Caret.isAtStart && !this.Editor.BlockManager.currentBlock.hasMedia) {
         this.Editor.BlockManager.insertDefaultBlockAtIndex(this.Editor.BlockManager.currentBlockIndex);
         // newCurrent = currentBlock
@@ -261,7 +258,7 @@ export default class BlockEvents extends Module {
          */
         newCurrent = this.Editor.BlockManager.split();
       }
-    }
+
 
 
     this.Editor.Caret.setToBlock(newCurrent);

@@ -24,6 +24,12 @@
     }
   }
 
+  &--loading {
+    .codex-editor__add {
+      display: none;
+    }
+   }
+
   /**
    * Styles for narrow holder
    */
