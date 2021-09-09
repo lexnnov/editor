@@ -10,18 +10,18 @@
   will-change: opacity, transform;
   display: none;
 
-  @media (--mobile) {
-    @apply --overlay-pane;
-    padding: 3px;
-    margin-top: 5px;
-  }
+  /*@media (--mobile) {*/
+  /*  @apply --overlay-pane;*/
+  /*  padding: 3px;*/
+  /*  margin-top: 5px;*/
+  /*}*/
 
   &--opened {
     display: block;
 
-    @media (--mobile){
-      display: flex;
-    }
+    /*@media (--mobile){*/
+    /*  display: flex;*/
+    /*}*/
   }
 
   &__content {
@@ -56,7 +56,7 @@
     }
 
     @media (--mobile){
-      display: inline-flex !important;
+      display: none;
       /*position: static;*/
       /*transform: none !important;*/
     }
