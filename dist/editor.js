@@ -1,7 +1,7 @@
 /*!
  * Editor.js
  * 
- * @version 0.0.31
+ * @version 0.0.32
  * 
  * @licence Apache-2.0
  * @author CodeX <https://codex.so>
@@ -11225,7 +11225,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }], [{
       key: "version",
       get: function get() {
-        return "0.0.31";
+        return "0.0.32";
       }
     }]);
     return EditorJS;
@@ -12858,8 +12858,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         dnd.setAttribute('draggable', 'true');
         this.nodes.toolbox = _dom["default"].make('div', Block.CSS.toolbox);
         add.appendChild(this.nodes.toolbox);
-        this.addTools(); // console.log(canBeRemoved)
-
+        this.addTools();
         contentNode.appendChild(dnd);
         contentNode.appendChild(pluginsContent);
         svg1.addEventListener('click', function () {
@@ -12949,7 +12948,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         button.innerHTML = toolToolboxSettings.icon;
         span.innerHTML = _i18n["default"].t(_namespaceInternal.I18nInternalNS.toolNames, toolToolboxSettings.title || tool.name);
         button.appendChild(span);
-        console.log(span);
 
         _dom["default"].append(this.nodes.toolbox, button);
 
@@ -12961,7 +12959,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
          */
 
         this.api.listeners.on(button, 'click', function (event) {
-          // console.log('11')
           _this5.toolButtonActivate(event, tool.name);
         });
         /**
@@ -16575,7 +16572,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (forceClose) {
           /** Close Toolbox when we move toolbar */
-          this.Editor.Toolbox.close();
+          this.Editor.AddBoxTools.close();
           this.Editor.BlockSettings.close();
         }
 
@@ -16629,6 +16626,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var needToCloseToolbox = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
         _.delay(function () {
+          alert('asd');
+
           _this3.move(needToCloseToolbox);
 
           _this3.nodes.wrapper.classList.add(_this3.CSS.toolbarOpened); // if (withBlockActions) {
@@ -16663,7 +16662,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var _this4 = this;
 
         var isMobile = this.Editor.UI.isMobile;
-        console.log(this.CSS.toolbar);
         this.nodes.wrapper = _dom["default"].make('div', this.CSS.toolbar); // const adder = $.make('div', 'qwer')
         // adder.addEventListener('click',  ()=> {
         //   this.plusButtonClicked();
@@ -16739,8 +16737,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
          * Appending Toolbar components to itself
          */
 
-
-        console.log(this.nodes);
 
         _dom["default"].append(this.nodes.content, this.Editor.AddBoxTools.nodes.toolbox); // $.append(this.nodes.actions, this.Editor.BlockSettings.nodes.wrapper);
 
@@ -19655,7 +19651,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             Caret = _this$Editor4.Caret;
         var currentBlock = BlockManager.currentBlock;
         var tool = currentBlock.tool;
-        console.log(currentBlock);
         /**
          * Check if Block should be removed by current Backspace keydown
          */
@@ -25582,7 +25577,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return {
           time: +new Date(),
           blocks: blocks,
-          version: "0.0.31"
+          version: "0.0.32"
         };
       }
     }]);
@@ -29093,11 +29088,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             Toolbox = _this$Editor2.Toolbox,
             BlockSettings = _this$Editor2.BlockSettings,
             InlineToolbar = _this$Editor2.InlineToolbar,
+            AddBox = _this$Editor2.AddBox,
             ConversionToolbar = _this$Editor2.ConversionToolbar;
         BlockSettings.close();
         InlineToolbar.close();
         ConversionToolbar.close();
-        Toolbox.close(); // AddBoxTools.close();
+        Toolbox.close();
+        AddBox.close();
       }
       /**
        * Check for mobile mode and cache a result
@@ -29363,6 +29360,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (this.Editor.Toolbox.opened) {
           this.Editor.Toolbox.close();
+          this.Editor.AddBox.close();
         } else if (this.Editor.BlockSettings.opened) {
           this.Editor.BlockSettings.close();
         } else if (this.Editor.ConversionToolbar.opened) {
@@ -29371,6 +29369,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           this.Editor.InlineToolbar.close();
         } else {
           this.Editor.Toolbar.close();
+          this.Editor.AddBoxTools.close();
         }
       }
       /**
@@ -29471,6 +29470,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           this.Editor.BlockManager.dropPointer();
           this.Editor.InlineToolbar.close();
           this.Editor.Toolbar.close();
+          this.Editor.AddBoxTools.close();
           this.Editor.ConversionToolbar.close();
         }
         /**
@@ -29534,6 +29534,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
         this.Editor.Toolbar.open();
+        this.Editor.AddBoxTools.close();
         /**
          * Hide the Plus Button
          */
@@ -31599,7 +31600,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       argsToPass.push(args);
     }
 
-    var editorLabelText = "Editor.js ".concat("0.0.31");
+    var editorLabelText = "Editor.js ".concat("0.0.32");
     var editorLabelStyle = "line-height: 1em;\n            color: #006FEA;\n            display: inline-block;\n            font-size: 11px;\n            line-height: 1em;\n            background-color: #fff;\n            padding: 4px 9px;\n            border-radius: 30px;\n            border: 1px solid rgba(56, 138, 229, 0.16);\n            margin: 4px 5px 4px 0;";
 
     if (labeled) {

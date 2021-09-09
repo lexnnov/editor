@@ -294,8 +294,6 @@ export default class BlockEvents extends Module {
     const currentBlock = BlockManager.currentBlock;
     const tool = currentBlock.tool;
 
-
-    console.log(currentBlock)
     /**
      * Check if Block should be removed by current Backspace keydown
      */

@@ -185,7 +185,7 @@ export default class AddBox extends Module<AddBoxNodes> {
   public move(forceClose = true): void {
     if (forceClose) {
       /** Close Toolbox when we move toolbar */
-      this.Editor.Toolbox.close();
+      this.Editor.AddBoxTools.close();
       this.Editor.BlockSettings.close();
     }
 
@@ -233,6 +233,7 @@ export default class AddBox extends Module<AddBoxNodes> {
    */
   public open(withBlockActions = true, needToCloseToolbox = true): void {
     _.delay(() => {
+      alert('asd')
       this.move(needToCloseToolbox);
       this.nodes.wrapper.classList.add(this.CSS.toolbarOpened);
 
@@ -264,7 +265,6 @@ export default class AddBox extends Module<AddBoxNodes> {
   private make(): void {
     const {isMobile} = this.Editor.UI;
 
-    console.log(this.CSS.toolbar)
     this.nodes.wrapper = $.make('div', this.CSS.toolbar);
     // const adder = $.make('div', 'qwer')
     // adder.addEventListener('click',  ()=> {
@@ -339,7 +339,6 @@ export default class AddBox extends Module<AddBoxNodes> {
     /**
      * Appending Toolbar components to itself
      */
-    console.log(this.nodes)
     $.append(this.nodes.content, this.Editor.AddBoxTools.nodes.toolbox);
     // $.append(this.nodes.actions, this.Editor.BlockSettings.nodes.wrapper);
 

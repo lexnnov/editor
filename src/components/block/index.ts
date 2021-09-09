@@ -816,13 +816,11 @@ export default class Block extends EventsDispatcher<BlockEvents> {
 
     add.appendChild(this.nodes.toolbox)
     this.addTools()
-    // console.log(canBeRemoved)
 
     contentNode.appendChild(dnd);
     contentNode.appendChild(pluginsContent);
 
     svg1.addEventListener('click', ()=> {
-
       this.toggle()
     })
 
@@ -910,8 +908,6 @@ export default class Block extends EventsDispatcher<BlockEvents> {
 
     button.appendChild(span)
 
-    console.log(span)
-
     $.append(this.nodes.toolbox, button);
 
     this.nodes.toolbox.appendChild(button);
@@ -922,7 +918,6 @@ export default class Block extends EventsDispatcher<BlockEvents> {
      * Add click listener
      */
     this.api.listeners.on(button, 'click', (event: KeyboardEvent | MouseEvent) => {
-      // console.log('11')
       this.toolButtonActivate(event, tool.name);
     });
 

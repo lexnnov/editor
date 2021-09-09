@@ -240,13 +240,14 @@ export default class UI extends Module<UINodes> {
    * Close all Editor's toolbars
    */
   public closeAllToolbars(): void {
-    const { Toolbox, BlockSettings, InlineToolbar, ConversionToolbar } = this.Editor;
+    const { Toolbox, BlockSettings, InlineToolbar, AddBox, ConversionToolbar } = this.Editor;
 
     BlockSettings.close();
     InlineToolbar.close();
     ConversionToolbar.close();
     Toolbox.close();
-    // AddBoxTools.close();
+    AddBox.close();
+
   }
 
   /**
@@ -493,6 +494,7 @@ export default class UI extends Module<UINodes> {
 
     if (this.Editor.Toolbox.opened) {
       this.Editor.Toolbox.close();
+      this.Editor.AddBox.close();
     } else if (this.Editor.BlockSettings.opened) {
       this.Editor.BlockSettings.close();
     } else if (this.Editor.ConversionToolbar.opened) {
@@ -501,6 +503,7 @@ export default class UI extends Module<UINodes> {
       this.Editor.InlineToolbar.close();
     } else {
       this.Editor.Toolbar.close();
+      this.Editor.AddBoxTools.close();
     }
   }
 
@@ -593,7 +596,9 @@ export default class UI extends Module<UINodes> {
       this.Editor.BlockManager.dropPointer();
       this.Editor.InlineToolbar.close();
       this.Editor.Toolbar.close();
+      this.Editor.AddBoxTools.close();
       this.Editor.ConversionToolbar.close();
+
     }
 
     /**
@@ -652,6 +657,7 @@ export default class UI extends Module<UINodes> {
      * Move and open toolbar
      */
     this.Editor.Toolbar.open();
+    this.Editor.AddBoxTools.close();
 
     /**
      * Hide the Plus Button
