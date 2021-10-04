@@ -91,6 +91,15 @@
      user-select: none;
  }
 
+  &__content--settings {
+     position: absolute;
+     right: 0;
+     top: 0;
+     bottom: 0;
+     margin: auto;
+     cursor: pointer;
+   }
+
   &__content--remove {
      position: absolute;
      right: 0;
