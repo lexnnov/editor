@@ -825,6 +825,9 @@ export default class Block extends EventsDispatcher<BlockEvents> {
     contentNode.appendChild(dnd);
     contentNode.appendChild(pluginsContent);
 
+    add.addEventListener('click', ()=> {
+      this.toggle()
+    })
     settings.addEventListener('click', ()=> {
       this.api.Editor.BlockSettings.open();
 
