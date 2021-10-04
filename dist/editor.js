@@ -1,7 +1,7 @@
 /*!
  * Editor.js
  * 
- * @version 0.0.37
+ * @version 0.0.38
  * 
  * @licence Apache-2.0
  * @author CodeX <https://codex.so>
@@ -11225,7 +11225,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }], [{
       key: "version",
       get: function get() {
-        return "0.0.37";
+        return "0.0.38";
       }
     }]);
     return EditorJS;
@@ -12564,13 +12564,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.addTools();
         contentNode.appendChild(dnd);
         contentNode.appendChild(pluginsContent);
-        add.addEventListener('click', function () {
+        svgAdd.addEventListener('click', function () {
           _this3.toggle();
         });
+        contentNode.appendChild(settings);
         settings.addEventListener('click', function () {
           _this3.api.Editor.BlockSettings.open();
         });
-        contentNode.appendChild(settings);
         /**
          * Block Tunes might wrap Block's content node to provide any UI changes
          *
@@ -19599,6 +19599,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "activateToolbox",
       value: function activateToolbox() {
+        // alert('asd')
         if (!this.Editor.Toolbar.opened) {
           this.Editor.Toolbar.open(false, false);
           this.Editor.Toolbar.plusButton.show();
@@ -25273,7 +25274,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return {
           time: +new Date(),
           blocks: blocks,
-          version: "0.0.37"
+          version: "0.0.38"
         };
       }
     }]);
@@ -31293,7 +31294,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       argsToPass.push(args);
     }
 
-    var editorLabelText = "Editor.js ".concat("0.0.37");
+    var editorLabelText = "Editor.js ".concat("0.0.38");
     var editorLabelStyle = "line-height: 1em;\n            color: #006FEA;\n            display: inline-block;\n            font-size: 11px;\n            line-height: 1em;\n            background-color: #fff;\n            padding: 4px 9px;\n            border-radius: 30px;\n            border: 1px solid rgba(56, 138, 229, 0.16);\n            margin: 4px 5px 4px 0;";
 
     if (labeled) {

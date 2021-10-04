@@ -764,6 +764,7 @@ export default class Block extends EventsDispatcher<BlockEvents> {
   }
 
   public open(): void {
+
     this.nodes.toolbox.style.removeProperty('transform');
     this.nodes.toolbox.style.removeProperty('max-height');
     this.api.Editor.UI.nodes.wrapper.classList.add(Block.CSS.openedToolbarHolderModifier);
@@ -821,18 +822,17 @@ export default class Block extends EventsDispatcher<BlockEvents> {
     this.addTools()
 
     contentNode.appendChild(dnd);
-    contentNode.appendChild(pluginsContent);
 
-    add.addEventListener('click', ()=> {
+    contentNode.appendChild(pluginsContent);
+    svgAdd.addEventListener('click', ()=> {
       this.toggle()
     })
-    settings.addEventListener('click', ()=> {
-      this.api.Editor.BlockSettings.open();
 
-    })
     contentNode.appendChild(settings);
 
-
+    settings.addEventListener('click', ()=> {
+      this.api.Editor.BlockSettings.open();
+    })
 
     /**
      * Block Tunes might wrap Block's content node to provide any UI changes
@@ -975,6 +975,7 @@ export default class Block extends EventsDispatcher<BlockEvents> {
     /**
      * close toolbar when node is changed
      */
+
     this.close();
   }
 

@@ -540,6 +540,7 @@ export default class BlockEvents extends Module {
    * If Toolbox is not open, then just open it and show plus button
    */
   private activateToolbox(): void {
+    // alert('asd')
     if (!this.Editor.Toolbar.opened) {
       this.Editor.Toolbar.open(false, false);
       this.Editor.Toolbar.plusButton.show();
