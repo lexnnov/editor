@@ -124,6 +124,7 @@ export default class Block extends EventsDispatcher<BlockEvents> {
       add: 'ce-block__add',
       dnd: 'ce-block__content--dnd',
       remove: 'ce-block__content--remove',
+      settings: 'ce-block__content--settings',
       focused: 'ce-block--focused',
       selected: 'ce-block--selected',
       dropTarget: 'ce-block--drop-target',
@@ -805,11 +806,15 @@ export default class Block extends EventsDispatcher<BlockEvents> {
 
     const dnd = $.make('div', Block.CSS.dnd)
     const remove = $.make('div', Block.CSS.remove)
-    const svg = $.svg('drag', 13, 13)
-    const svg1 = $.svg('intermediate_plus', 13, 13)
+    const settings = $.make('div', Block.CSS.settings)
+    const svgDrag = $.svg('drag', 13, 13)
+    const svgAdd = $.svg('intermediate_plus', 13, 13)
+    const svgSettings = $.svg('settings', 13, 13)
 
-    dnd.appendChild(svg)
-    add.appendChild(svg1)
+    dnd.appendChild(svgDrag)
+    add.appendChild(svgAdd)
+    settings.appendChild(svgSettings)
+    // settings.appendChild(svg1)
     dnd.setAttribute('draggable', 'true')
 
     this.nodes.toolbox = $.make('div', Block.CSS.toolbox);
@@ -820,9 +825,11 @@ export default class Block extends EventsDispatcher<BlockEvents> {
     contentNode.appendChild(dnd);
     contentNode.appendChild(pluginsContent);
 
-    svg1.addEventListener('click', ()=> {
-      this.toggle()
+    settings.addEventListener('click', ()=> {
+      this.api.Editor.BlockSettings.open();
+
     })
+    contentNode.appendChild(settings);
 
     if(this.canBeRemoved) {
       contentNode.appendChild(remove);

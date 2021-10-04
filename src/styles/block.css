@@ -6,6 +6,13 @@
   color: #F66C00;
 }
 
+.icon--settings {
+  color: #C0C4CC;
+}
+.icon--settings:hover {
+  color: #F66C00;
+}
+
 .icon--bottom_plus {
   color: #E6E6E6;
 }
