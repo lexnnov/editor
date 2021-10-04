@@ -1,7 +1,7 @@
 /*!
  * Editor.js
  * 
- * @version 0.0.36
+ * @version 0.0.37
  * 
  * @licence Apache-2.0
  * @author CodeX <https://codex.so>
@@ -11225,7 +11225,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }], [{
       key: "version",
       get: function get() {
-        return "0.0.36";
+        return "0.0.37";
       }
     }]);
     return EditorJS;
@@ -12547,8 +12547,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         var dnd = _dom["default"].make('div', Block.CSS.dnd);
 
-        var remove = _dom["default"].make('div', Block.CSS.remove);
-
         var settings = _dom["default"].make('div', Block.CSS.settings);
 
         var svgDrag = _dom["default"].svg('drag', 13, 13);
@@ -12559,8 +12557,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         dnd.appendChild(svgDrag);
         add.appendChild(svgAdd);
-        settings.appendChild(svgSettings); // settings.appendChild(svg1)
-
+        settings.appendChild(svgSettings);
         dnd.setAttribute('draggable', 'true');
         this.nodes.toolbox = _dom["default"].make('div', Block.CSS.toolbox);
         add.appendChild(this.nodes.toolbox);
@@ -12574,13 +12571,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           _this3.api.Editor.BlockSettings.open();
         });
         contentNode.appendChild(settings);
-
-        if (this.canBeRemoved) {
-          contentNode.appendChild(remove);
-          remove.addEventListener('click', function () {
-            _this3.api.methods.blocks["delete"](_this3.api.methods.blocks.getCurrentBlockIndex());
-          });
-        }
         /**
          * Block Tunes might wrap Block's content node to provide any UI changes
          *
@@ -12590,7 +12580,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
          *   </tune1wrapper>
          * </tune2wrapper>
          */
-
 
         var wrappedContentNode = contentNode;
         [].concat((0, _toConsumableArray2["default"])(this.tunesInstances.values()), (0, _toConsumableArray2["default"])(this.defaultTunesInstances.values())).forEach(function (tune) {
@@ -25284,7 +25273,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return {
           time: +new Date(),
           blocks: blocks,
-          version: "0.0.36"
+          version: "0.0.37"
         };
       }
     }]);
@@ -31304,7 +31293,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       argsToPass.push(args);
     }
 
-    var editorLabelText = "Editor.js ".concat("0.0.36");
+    var editorLabelText = "Editor.js ".concat("0.0.37");
     var editorLabelStyle = "line-height: 1em;\n            color: #006FEA;\n            display: inline-block;\n            font-size: 11px;\n            line-height: 1em;\n            background-color: #fff;\n            padding: 4px 9px;\n            border-radius: 30px;\n            border: 1px solid rgba(56, 138, 229, 0.16);\n            margin: 4px 5px 4px 0;";
 
     if (labeled) {

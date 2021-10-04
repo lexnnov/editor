@@ -805,7 +805,6 @@ export default class Block extends EventsDispatcher<BlockEvents> {
       pluginsContent = this.toolInstance.render();
 
     const dnd = $.make('div', Block.CSS.dnd)
-    const remove = $.make('div', Block.CSS.remove)
     const settings = $.make('div', Block.CSS.settings)
     const svgDrag = $.svg('drag', 13, 13)
     const svgAdd = $.svg('intermediate_plus', 13, 13)
@@ -814,7 +813,6 @@ export default class Block extends EventsDispatcher<BlockEvents> {
     dnd.appendChild(svgDrag)
     add.appendChild(svgAdd)
     settings.appendChild(svgSettings)
-    // settings.appendChild(svg1)
     dnd.setAttribute('draggable', 'true')
 
     this.nodes.toolbox = $.make('div', Block.CSS.toolbox);
@@ -834,13 +832,6 @@ export default class Block extends EventsDispatcher<BlockEvents> {
     })
     contentNode.appendChild(settings);
 
-    if(this.canBeRemoved) {
-      contentNode.appendChild(remove);
-
-      remove.addEventListener('click', () => {
-        this.api.methods.blocks.delete(this.api.methods.blocks.getCurrentBlockIndex())
-      })
-    }
 
 
     /**
