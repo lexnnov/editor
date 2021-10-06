@@ -1,6 +1,6 @@
 {
   "name": "@tseditorjs/editorjs",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "description": "Editor.js — Native JS, based on API and Open Source",
   "main": "dist/editor.js",
   "types": "./types/index.d.ts",

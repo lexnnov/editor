@@ -830,8 +830,12 @@ export default class Block extends EventsDispatcher<BlockEvents> {
 
     contentNode.appendChild(settings);
 
-    settings.addEventListener('click', ()=> {
-      this.api.Editor.BlockSettings.open();
+    settings.addEventListener('click', (event)=> {
+      if(this.api.Editor.BlockSettings.opened) {
+        this.api.Editor.BlockSettings.close();
+      } else {
+        this.api.Editor.BlockSettings.open();
+      }
     })
 
     /**

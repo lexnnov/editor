@@ -608,6 +608,12 @@ export default class UI extends Module<UINodes> {
      * Clear Selection if user clicked somewhere
      */
     this.Editor.BlockSelection.clearSelection(event);
+
+    if(!(target.classList.contains('ce-toolbox-add1') || target.classList.contains('ce-toolbox-add1__span'))) {
+      this.Editor.BlockManager.blocks.forEach(el=>{
+        el.close()
+      })
+    }
   }
 
   /**
@@ -627,6 +633,7 @@ export default class UI extends Module<UINodes> {
     /**
      * If click was fired is on Editor`s wrapper, try to get clicked node by elementFromPoint method
      */
+
     if (clickedNode === this.nodes.redactor) {
       const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
       const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
@@ -661,6 +668,12 @@ export default class UI extends Module<UINodes> {
      */
     this.Editor.Toolbar.open();
     this.Editor.AddBoxTools.close();
+
+    if(!(clickedNode.classList.contains('ce-toolbox-add1') || clickedNode.classList.contains('ce-toolbox-add1__span'))) {
+      this.Editor.BlockManager.blocks.forEach(el=>{
+        el.close()
+      })
+    }
 
     /**
      * Hide the Plus Button
